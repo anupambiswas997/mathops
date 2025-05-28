@@ -14,7 +14,7 @@ Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1)
     Matrix result = {};
     for(int i = 0; i< dim0.first; i++)
     {
-        Vector row;
+        Vector row = {};
         for(int j = 0; j < dim1.second; j++)
         {
             double sum = 0;
@@ -40,7 +40,7 @@ Matrix getTranspose(const Matrix& mat)
     Dimension dim = getMatrixDimensions(mat);
     for(int j = 0; j < dim.second; j++)
     {
-        Vector row;
+        Vector row = {};
         for(int i = 0; i < dim.first; i++)
         {
             row.push_back(mat[i][j]);
@@ -98,4 +98,16 @@ Dimension getMatrixDimensions(const Matrix& mat)
     */
     int numCols = (mat.size() > 0) ? mat[0].size() : 0;
     return Dimension(mat.size(), numCols);
+}
+
+Matrix getIdentityMatrix(int size)
+{
+    Matrix result = {};
+    for(int i = 0; i < size; i++)
+    {
+        Vector vec(size, 0);
+        vec[i] = 1;
+        result.push_back(vec);
+    }
+    return result;
 }

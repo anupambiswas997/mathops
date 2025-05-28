@@ -21,5 +21,6 @@ Vector multiplyMatrixAndVector(const Matrix& mat, const Vector& vec);
 bool isValidMatrix(const Matrix& mat);
 bool isInvertibleMatrix(const Matrix& mat);
 Dimension getMatrixDimensions(const Matrix& mat);
+Matrix getIdentityMatrix(int size);
 
 #endif
