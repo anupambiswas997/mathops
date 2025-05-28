@@ -11,11 +11,15 @@ A vector of vectors will be used to represent a matrix.
 #include <vector>
 
 typedef std::vector<std::vector<double> > Matrix;
+typedef std::vector<double> Vector;
+typedef std::pair<int, int> Dimension;
 
 Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1);
 Matrix getMatrixInverse(const Matrix& mat);
 Matrix getTranspose(const Matrix& mat);
+Vector multiplyMatrixAndVector(const Matrix& mat, const Vector& vec);
 bool isValidMatrix(const Matrix& mat);
 bool isInvertibleMatrix(const Matrix& mat);
+Dimension getMatrixDimensions(const Matrix& mat);
 
 #endif
