@@ -23,4 +23,29 @@ bool isInvertibleMatrix(const Matrix& mat);
 Dimension getMatrixDimensions(const Matrix& mat);
 Matrix getIdentityMatrix(int size);
 
+/*
+RowTransformer helps to record a sequence of row transformations, so that they
+can be applied again to another matrix. This is useful while computing matrix inverses
+using an augmented matrix method.
+*/
+class RowTransformer
+{
+    class Transform
+    {
+        int m_row;
+        std::vector<std::pair<int, double> > m_rowLinearMultipliers;
+        int m_row2;
+    public:
+        Transform(int row, int row2, std::vector<std::pair<int, double> > multipliers = {});
+        //friend class RowTransformer;
+    };
+    std::vector<Transform> m_transforms;
+public:
+    enum TransformationTypeEnum {LINEAR_COMBINATION, SWAP};
+    RowTransformer();
+    void swap(int rowi, int rowj);
+    void modify(int row, const std::vector<std::pair<int, double> >& rowMultipliers);
+    void apply(Matrix& mat);
+};
+
 #endif

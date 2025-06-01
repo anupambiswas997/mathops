@@ -1,8 +1,35 @@
 #include "linear_algebra.hpp"
 #include <cassert>
 
+RowTransformer::Transform::Transform(int row, int row2, std::vector<std::pair<int, double> > multipliers)
+{
+    m_row = row;
+    // m_row2 == -1 indicates a swap transform.
+    m_row2 = (multipliers.size() == 0) ? row2 : -1;
+    m_rowLinearMultipliers = multipliers;
+}
+
+RowTransformer::RowTransformer()
+{
+    m_transforms = {};
+}
+
+void RowTransformer::swap(int rowi, int rowj)
+{
+    m_transforms.push_back(Transform(rowi, rowj));
+}
+
+void RowTransformer::modify(int row, const std::vector<std::pair<int, double> >& rowMultipliers)
+{
+    m_transforms.push_back(Transform(row, -1, rowMultipliers));
+}
+
+void RowTransformer::apply(Matrix& mat)
+{
+}
+
 /*
-The implementation of matrix multiplication is a Naive one. In
+The implementation of matrix multiplication is a naive one. In
 future, this will be changed to a more efficient one, probably
 employing Strassen's algorithm.
 */
@@ -31,6 +58,10 @@ Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1)
 
 Matrix getMatrixInverse(const Matrix& mat)
 {
+    // No inspection is performed here to verify if the matrix mat is square.
+    int size = mat.size();
+    assert (size > 0);
+    Matrix iden = getIdentityMatrix(size);
     return {};
 }
 
