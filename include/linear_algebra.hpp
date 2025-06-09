@@ -37,14 +37,15 @@ class RowTransformer
         int m_row2;
     public:
         Transform(int row, int row2, std::vector<std::pair<int, double> > multipliers = {});
-        //friend class RowTransformer;
+        friend class RowTransformer;
     };
     std::vector<Transform> m_transforms;
 public:
-    enum TransformationTypeEnum {LINEAR_COMBINATION, SWAP};
     RowTransformer();
-    void swap(int rowi, int rowj);
-    void modify(int row, const std::vector<std::pair<int, double> >& rowMultipliers);
+    void recordSwap(int rowi, int rowj);
+    void performSwap(int rowi, int rowj, Matrix& mat);
+    void recorRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers);
+    void performRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers, Matrix& mat, int columnStart=0, int columnEnd=-1);
     void apply(Matrix& mat);
 };
 
