@@ -13,6 +13,8 @@ A vector of vectors will be used to represent a matrix.
 typedef std::vector<std::vector<double> > Matrix;
 typedef std::vector<double> Vector;
 typedef std::pair<int, int> Dimension;
+typedef std::pair<int, double> RowMultiplier;
+typedef std::vector<std::pair<int, double> > RowMultVector;
 
 Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1);
 Matrix getMatrixInverse(const Matrix& mat);
@@ -22,6 +24,7 @@ bool isValidMatrix(const Matrix& mat);
 bool isInvertibleMatrix(const Matrix& mat);
 Dimension getMatrixDimensions(const Matrix& mat);
 Matrix getIdentityMatrix(int size);
+Matrix duplicateMatrix(const Matrix& mat);
 
 /*
 RowTransformer helps to record a sequence of row transformations, so that they
@@ -44,9 +47,9 @@ public:
     RowTransformer();
     void recordSwap(int rowi, int rowj);
     void performSwap(int rowi, int rowj, Matrix& mat);
-    void recorRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers);
+    void recordRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers);
     void performRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers, Matrix& mat, int columnStart=0, int columnEnd=-1);
-    void apply(Matrix& mat);
+    Matrix& apply(Matrix& mat);
 };
 
 #endif

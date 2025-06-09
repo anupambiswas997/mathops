@@ -32,7 +32,7 @@ void RowTransformer::performSwap(int rowi, int rowj, Matrix& mat)
     recordSwap(rowi, rowj);
 }
 
-void RowTransformer::recorRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers)
+void RowTransformer::recordRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers)
 {
     m_transforms.push_back(Transform(row, -1, rowMultipliers));
 }
@@ -41,7 +41,7 @@ void RowTransformer::performRowModification(int row, const std::vector<std::pair
 {
     columnEnd = (columnEnd == -1) ? mat[0].size() : columnEnd;
     int increment = (columnEnd > columnStart) ? 1 : -1;
-    for(int j = columnStart; (j >= columnStart) && (j < columnEnd); j = j + increment)
+    for(int j = columnStart; (increment == 1 && j < columnEnd) || (increment == -1 && j > columnEnd); j = j + increment)
     {
         double sum = 0;
         for(auto& rowMultiplier: rowMultipliers)
@@ -52,10 +52,10 @@ void RowTransformer::performRowModification(int row, const std::vector<std::pair
         }
         mat[row][j] = sum;
     }
-    recorRowModification(row, rowMultipliers);
+    recordRowModification(row, rowMultipliers);
 }
 
-void RowTransformer::apply(Matrix& mat)
+Matrix& RowTransformer::apply(Matrix& mat)
 {
     int numCols = mat[0].size();
     for(auto &transform: m_transforms)
@@ -69,6 +69,7 @@ void RowTransformer::apply(Matrix& mat)
             performRowModification(transform.m_row, transform.m_rowLinearMultipliers, mat);
         }
     }
+    return mat;
 }
 
 /*
@@ -105,7 +106,52 @@ Matrix getMatrixInverse(const Matrix& mat)
     int size = mat.size();
     assert (size > 0);
     Matrix iden = getIdentityMatrix(size);
-    return {};
+    RowTransformer rowTransformer;
+    Matrix matDup = duplicateMatrix(mat);
+    bool matrixInvertible = true; // assumed at the start
+    for(int i = 0; i < size; i++)
+    {
+        if(matDup[i][i] == 0) // better condition possible (TODO)
+        {
+            int nonZeroPivotRow = -1;
+            for(int i2 = (i+1); i2 < size; i2++)
+            {
+                if(matDup[i2][i] != 0) // this may be improved, as comparison to 0 may not be optimal
+                {
+                    nonZeroPivotRow = i2;
+                    break;
+                }
+            }
+            if(nonZeroPivotRow != -1)
+            {
+                rowTransformer.performSwap(i, nonZeroPivotRow, matDup);
+            }
+            else
+            {
+                matrixInvertible = false;
+                // at this point return - no need to proceed further
+            }
+        }
+        if(matrixInvertible)
+        {
+            RowMultVector rowMults = {RowMultiplier(i, 1 / matDup[i][i])};
+            rowTransformer.performRowModification(i, rowMults, matDup, i);
+            for(int i2 = (i+1); i2 < size; i2++)
+            {
+                rowMults = {RowMultiplier(i2, 1), RowMultiplier(i, -matDup[i2][i])};
+                rowTransformer.performRowModification(i2, rowMults, matDup, i);
+            }
+        }
+    }
+    for(int i = (size-1); i >=0; i--)
+    {
+        for(int i2 = (i-1); i2 >= 0; i2--)
+        {
+            RowMultVector rowMults = {RowMultiplier(i2, 1), RowMultiplier(i, -matDup[i2][i])};
+            rowTransformer.performRowModification(i2, rowMults, matDup, i, (i2-1));
+        }
+    }
+    return rowTransformer.apply(iden);
 }
 
 Matrix getTranspose(const Matrix& mat)
@@ -184,4 +230,15 @@ Matrix getIdentityMatrix(int size)
         result.push_back(vec);
     }
     return result;
+}
+
+Matrix duplicateMatrix(const Matrix& mat)
+{
+    Matrix dup = {};
+    for(int i = 0; i < mat.size(); i++)
+    {
+        std::vector<double> rowVec = mat[i];
+        dup.push_back(rowVec);
+    }
+    return dup;
 }
