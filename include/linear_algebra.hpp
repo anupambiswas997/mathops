@@ -8,13 +8,7 @@ matrix inverses, etc.
 A vector of vectors will be used to represent a matrix.
 */
 
-#include <vector>
-
-typedef std::vector<std::vector<double> > Matrix;
-typedef std::vector<double> Vector;
-typedef std::pair<int, int> Dimension;
-typedef std::pair<int, double> RowMultiplier;
-typedef std::vector<std::pair<int, double> > RowMultVector;
+#include "common_types.hpp"
 
 Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1);
 Matrix getMatrixInverse(const Matrix& mat);
