@@ -46,6 +46,15 @@ void testPrint()
     Matrix mat = getRandomMatrix(3, 4, -3, 3);
     cout << endl << "A matrix of dimensions (3, 4) with elements in range [-3, 3] should be printed below:" << endl;
     cout << getMatrixText(mat) << endl;
+    Matrix ide = getIdentityMatrix(5);
+    cout << endl << "An identity matrix of dimensions (5, 5) should be printed below:" << endl;
+    cout << getMatrixText(ide) << endl;
+    Matrix mat2 = getRandomMatrix(3, 3, -5, 5);
+    Matrix mat3 = getMatrixInverse(mat2);
+    Matrix mat4 = multiplyMatrices(mat2, mat3);
+    cout << "Matrix mat2:" << endl << getMatrixText(mat2) << endl;
+    cout << "Matrix mat3:" << endl << getMatrixText(mat3) << endl;
+    cout << "Matrix mat4:" << endl << getMatrixText(mat4) << endl;
 }
 
 int main(int argc, char *argv[])

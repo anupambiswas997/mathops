@@ -2,6 +2,10 @@
 #include <cassert>
 #include <algorithm>
 
+
+#include "print_utils.hpp" // may be removed
+#include <iostream> // may be removed
+
 RowTransformer::Transform::Transform(int row, int row2, std::vector<std::pair<int, double> > multipliers)
 {
     m_row = row;
@@ -46,9 +50,9 @@ void RowTransformer::performRowModification(int row, const std::vector<std::pair
         double sum = 0;
         for(auto& rowMultiplier: rowMultipliers)
         {
-            int row = rowMultiplier.first;
+            int row2 = rowMultiplier.first;
             double multiplier = rowMultiplier.second;
-            sum += mat[row][j] * multiplier;
+            sum += mat[row2][j] * multiplier;
         }
         mat[row][j] = sum;
     }
@@ -109,6 +113,7 @@ Matrix getMatrixInverse(const Matrix& mat)
     RowTransformer rowTransformer;
     Matrix matDup = duplicateMatrix(mat);
     bool matrixInvertible = true; // assumed at the start
+    std::string ms = "";
     for(int i = 0; i < size; i++)
     {
         if(matDup[i][i] == 0) // better condition possible (TODO)
@@ -124,7 +129,9 @@ Matrix getMatrixInverse(const Matrix& mat)
             }
             if(nonZeroPivotRow != -1)
             {
+                ms += "Matrix before swap:\n" + getMatrixText(matDup) + "\n";
                 rowTransformer.performSwap(i, nonZeroPivotRow, matDup);
+                ms += "Matrix after swap:\n" + getMatrixText(matDup) + "\n";
             }
             else
             {
@@ -135,11 +142,16 @@ Matrix getMatrixInverse(const Matrix& mat)
         if(matrixInvertible)
         {
             RowMultVector rowMults = {RowMultiplier(i, 1 / matDup[i][i])};
+            ms += "Matrix before normalizing row " + std::to_string(i) + ":\n" + getMatrixText(matDup) + "\n";
             rowTransformer.performRowModification(i, rowMults, matDup, i);
+            ms += "Matrix after normalizing row " + std::to_string(i) + ":\n" + getMatrixText(matDup) + "\n";
             for(int i2 = (i+1); i2 < size; i2++)
             {
+                std::string x = std::to_string(i2) + " - " + std::to_string(matDup[i2][i]) + " * " + std::to_string(i);
+                ms += "Matrix before row-modifying (" + x + "):\n" + getMatrixText(matDup) + "\n";
                 rowMults = {RowMultiplier(i2, 1), RowMultiplier(i, -matDup[i2][i])};
                 rowTransformer.performRowModification(i2, rowMults, matDup, i);
+                ms += "Matrix after row-modifying:\n" + getMatrixText(matDup) + "\n";
             }
         }
     }
@@ -147,10 +159,15 @@ Matrix getMatrixInverse(const Matrix& mat)
     {
         for(int i2 = (i-1); i2 >= 0; i2--)
         {
+            std::string x = std::to_string(i2) + " - " + std::to_string(matDup[i2][i]) + " * " + std::to_string(i);
+            //ms += "Matrix before row-modifying:\n" + getMatrixText(matDup) + "\n";
+            ms += "Matrix before row-modifying (" + x + "):\n" + getMatrixText(matDup) + "\n";
             RowMultVector rowMults = {RowMultiplier(i2, 1), RowMultiplier(i, -matDup[i2][i])};
             rowTransformer.performRowModification(i2, rowMults, matDup, i, (i2-1));
+            ms += "Matrix after row-modifying:\n" + getMatrixText(matDup) + "\n";
         }
     }
+    std::cout << ms << std::endl;
     return rowTransformer.apply(iden);
 }
 
