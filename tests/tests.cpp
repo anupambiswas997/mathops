@@ -1,6 +1,7 @@
 #include <iostream>
 #include "linear_algebra.hpp"
 #include "random_quantities.hpp"
+#include "print_utils.hpp"
 #include <cassert>
 
 using namespace std;
@@ -37,9 +38,20 @@ void testRandomNumber()
     cout << "Random number tests passed" << endl;
 }
 
+void testPrint()
+{
+    Vector vec = getRandomVector(5, 0, 3);
+    cout << "A vector of size 5 with elements in range [0, 3] should be printed below:" << endl;
+    cout << getVectorText(vec) << endl;
+    Matrix mat = getRandomMatrix(3, 4, -3, 3);
+    cout << endl << "A matrix of dimensions (3, 4) with elements in range [-3, 3] should be printed below:" << endl;
+    cout << getMatrixText(mat) << endl;
+}
+
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
     testRandomNumber();
+    testPrint();
     return 0;
 }
