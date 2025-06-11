@@ -50,7 +50,7 @@ void testPrint()
     cout << endl << "An identity matrix of dimensions (5, 5) should be printed below:" << endl;
     cout << getMatrixText(ide) << endl;
     Matrix mat2 = getRandomMatrix(3, 3, -5, 5);
-    Matrix mat3 = getMatrixInverse(mat2);
+    Matrix mat3 = getMatrixInverse(mat2, true);
     Matrix mat4 = multiplyMatrices(mat2, mat3);
     cout << "Matrix mat2:" << endl << getMatrixText(mat2, "   ") << endl;
     cout << "Matrix mat3:" << endl << getMatrixText(mat3, "   ") << endl;

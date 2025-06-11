@@ -1,10 +1,18 @@
 #include "linear_algebra.hpp"
+#include "print_utils.hpp"
 #include <cassert>
 #include <algorithm>
+#include <iostream>
 
-
-#include "print_utils.hpp" // may be removed
-#include <iostream> // may be removed
+std::string getRowMultipliersText(const std::vector<std::pair<int, double> > rowMultipliers)
+{
+    std::string multStr = "";
+    for(auto &rowMult: rowMultipliers)
+    {
+        multStr += "[row" + std::to_string(rowMult.first) + ", " + std::to_string(rowMult.second) + "] ";
+    }
+    return multStr;
+}
 
 RowTransformer::Transform::Transform(int row, int row2, std::vector<std::pair<int, double> > multipliers)
 {
@@ -16,9 +24,10 @@ RowTransformer::Transform::Transform(int row, int row2, std::vector<std::pair<in
     m_rowLinearMultipliers = multipliers;
 }
 
-RowTransformer::RowTransformer()
+RowTransformer::RowTransformer(bool debug)
 {
     m_transforms = {};
+    m_debug = debug;
 }
 
 void RowTransformer::recordSwap(int rowi, int rowj)
@@ -28,21 +37,40 @@ void RowTransformer::recordSwap(int rowi, int rowj)
 
 void RowTransformer::performSwap(int rowi, int rowj, Matrix& mat)
 {
+    if(m_debug)
+    {
+        std::cout << "Performing row-swap: rows (" << rowi << ", " << rowj << std::endl;
+        std::cout << "Matrix: before swap" << std::endl << getMatrixText(mat, "   ") << std::endl;
+    }
     int numCols = mat[0].size();
     for(int j = 0; j < numCols; j++)
     {
         std::swap(mat[rowi][j], mat[rowj][j]);
     }
+    if(m_debug)
+    {
+        std::cout << "Matrix: after swap" << std::endl << getMatrixText(mat, "   ") << std::endl;
+    }
+}
+
+void RowTransformer::performAndRecordSwap(int rowi, int rowj, Matrix& mat)
+{
+    performSwap(rowi, rowj, mat);
     recordSwap(rowi, rowj);
 }
 
-void RowTransformer::recordRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers)
+void RowTransformer::recordModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers)
 {
     m_transforms.push_back(Transform(row, -1, rowMultipliers));
 }
 
-void RowTransformer::performRowModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers, Matrix& mat, int columnStart, int columnEnd)
+void RowTransformer::performModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers, Matrix& mat, int columnStart, int columnEnd)
 {
+    if(m_debug)
+    {
+        std::cout << "Performing row-modification: row" << row << ": " << getRowMultipliersText(rowMultipliers) << std::endl;
+        std::cout << "Matrix: before modification" << std::endl << getMatrixText(mat, "   ") << std::endl;
+    }
     columnEnd = (columnEnd == -1) ? mat[0].size() : columnEnd;
     int increment = (columnEnd > columnStart) ? 1 : -1;
     for(int j = columnStart; (increment == 1 && j < columnEnd) || (increment == -1 && j > columnEnd); j = j + increment)
@@ -56,21 +84,35 @@ void RowTransformer::performRowModification(int row, const std::vector<std::pair
         }
         mat[row][j] = sum;
     }
-    recordRowModification(row, rowMultipliers);
+    if(m_debug)
+    {
+        std::cout << "Matrix: after modification" << std::endl << getMatrixText(mat, "   ") << std::endl;
+    }
+}
+
+void RowTransformer::performAndRecordModification(int row, const std::vector<std::pair<int, double> >& rowMultipliers, Matrix& mat, int columnStart, int columnEnd)
+{
+    performModification(row, rowMultipliers, mat, columnStart, columnEnd);
+    recordModification(row, rowMultipliers);
 }
 
 Matrix& RowTransformer::apply(Matrix& mat)
 {
     int numCols = mat[0].size();
-    for(auto &transform: m_transforms)
+    for(int i = 0; i < m_transforms.size(); i++)
     {
+        Transform &transform = m_transforms[i];
+        if(m_debug)
+        {
+            std::cout << "Transform: m_row = " << transform.m_row << ", m_row2 = " << transform.m_row2 << ", rowMults = " << getRowMultipliersText(transform.m_rowLinearMultipliers) << std::endl;
+        }
         if(transform.m_row2 != -1) // swap
         {
             performSwap(transform.m_row, transform.m_row2, mat);
         }
         else // linear combination
         {
-            performRowModification(transform.m_row, transform.m_rowLinearMultipliers, mat);
+            performModification(transform.m_row, transform.m_rowLinearMultipliers, mat);
         }
     }
     return mat;
@@ -104,16 +146,19 @@ Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1)
     return result;
 }
 
-Matrix getMatrixInverse(const Matrix& mat)
+Matrix getMatrixInverse(const Matrix& mat, bool debug)
 {
     // No inspection is performed here to verify if the matrix mat is square.
     int size = mat.size();
     assert (size > 0);
     Matrix iden = getIdentityMatrix(size);
-    RowTransformer rowTransformer;
+    RowTransformer rowTransformer(debug);
     Matrix matDup = duplicateMatrix(mat);
     bool matrixInvertible = true; // assumed at the start
-    std::string ms = "";
+    if(debug)
+    {
+        std::cout << "Row-transforming input matrix:" << std::endl << getMatrixText(mat, "   ") << std::endl;
+    }
     for(int i = 0; i < size; i++)
     {
         if(matDup[i][i] == 0) // better condition possible (TODO)
@@ -129,9 +174,7 @@ Matrix getMatrixInverse(const Matrix& mat)
             }
             if(nonZeroPivotRow != -1)
             {
-                ms += "Matrix before swap:\n" + getMatrixText(matDup) + "\n";
-                rowTransformer.performSwap(i, nonZeroPivotRow, matDup);
-                ms += "Matrix after swap:\n" + getMatrixText(matDup) + "\n";
+                rowTransformer.performAndRecordSwap(i, nonZeroPivotRow, matDup);
             }
             else
             {
@@ -142,16 +185,11 @@ Matrix getMatrixInverse(const Matrix& mat)
         if(matrixInvertible)
         {
             RowMultVector rowMults = {RowMultiplier(i, 1 / matDup[i][i])};
-            ms += "Matrix before normalizing row " + std::to_string(i) + ":\n" + getMatrixText(matDup) + "\n";
-            rowTransformer.performRowModification(i, rowMults, matDup, i);
-            ms += "Matrix after normalizing row " + std::to_string(i) + ":\n" + getMatrixText(matDup) + "\n";
+            rowTransformer.performAndRecordModification(i, rowMults, matDup, i);
             for(int i2 = (i+1); i2 < size; i2++)
             {
-                std::string x = std::to_string(i2) + " - " + std::to_string(matDup[i2][i]) + " * " + std::to_string(i);
-                ms += "Matrix before row-modifying (" + x + "):\n" + getMatrixText(matDup) + "\n";
                 rowMults = {RowMultiplier(i2, 1), RowMultiplier(i, -matDup[i2][i])};
-                rowTransformer.performRowModification(i2, rowMults, matDup, i);
-                ms += "Matrix after row-modifying:\n" + getMatrixText(matDup) + "\n";
+                rowTransformer.performAndRecordModification(i2, rowMults, matDup, i);
             }
         }
     }
@@ -159,15 +197,14 @@ Matrix getMatrixInverse(const Matrix& mat)
     {
         for(int i2 = (i-1); i2 >= 0; i2--)
         {
-            std::string x = std::to_string(i2) + " - " + std::to_string(matDup[i2][i]) + " * " + std::to_string(i);
-            //ms += "Matrix before row-modifying:\n" + getMatrixText(matDup) + "\n";
-            ms += "Matrix before row-modifying (" + x + "):\n" + getMatrixText(matDup) + "\n";
             RowMultVector rowMults = {RowMultiplier(i2, 1), RowMultiplier(i, -matDup[i2][i])};
-            rowTransformer.performRowModification(i2, rowMults, matDup, i, (i2-1));
-            ms += "Matrix after row-modifying:\n" + getMatrixText(matDup) + "\n";
+            rowTransformer.performAndRecordModification(i2, rowMults, matDup, i, (i2-1));
         }
     }
-    std::cout << ms << std::endl;
+    if(debug)
+    {
+        std::cout << "Row-transforming identity matrix:" << std::endl << getMatrixText(iden, "   ") << std::endl;
+    }
     return rowTransformer.apply(iden);
 }
 
