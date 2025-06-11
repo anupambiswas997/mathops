@@ -52,9 +52,9 @@ void testPrint()
     Matrix mat2 = getRandomMatrix(3, 3, -5, 5);
     Matrix mat3 = getMatrixInverse(mat2);
     Matrix mat4 = multiplyMatrices(mat2, mat3);
-    cout << "Matrix mat2:" << endl << getMatrixText(mat2) << endl;
-    cout << "Matrix mat3:" << endl << getMatrixText(mat3) << endl;
-    cout << "Matrix mat4:" << endl << getMatrixText(mat4) << endl;
+    cout << "Matrix mat2:" << endl << getMatrixText(mat2, "   ") << endl;
+    cout << "Matrix mat3:" << endl << getMatrixText(mat3, "   ") << endl;
+    cout << "Matrix mat4:" << endl << getMatrixText(mat4, "   ") << endl;
 }
 
 int main(int argc, char *argv[])

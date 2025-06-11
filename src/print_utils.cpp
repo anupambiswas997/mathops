@@ -20,9 +20,9 @@ std::string getPaddedString(std::string str, int maxLen, bool prePad=true)
     return prePad ? (padText + str) : (str + padText);
 }
 
-std::string getVectorText(const Vector& vec)
+std::string getVectorText(const Vector& vec, std::string indent)
 {
-    std::string vecStr = "";
+    std::string vecStr = indent;
     for(auto& e: vec)
     {
         vecStr += std::to_string(e) + " ";
@@ -30,7 +30,7 @@ std::string getVectorText(const Vector& vec)
     return vecStr;
 }
 
-std::string getMatrixText(const Matrix& mat)
+std::string getMatrixText(const Matrix& mat, std::string indent)
 {
     std::string matStr = "";
     int maxLen = 0;
@@ -43,11 +43,12 @@ std::string getMatrixText(const Matrix& mat)
     }
     for(auto& v: strMat)
     {
+        std::string line = indent;
         for(auto& s: v)
         {
-            matStr += getPaddedString(s, maxLen) + " ";
+            line += getPaddedString(s, maxLen) + " ";
         }
-        matStr += "\n";
+        matStr += (line + "\n");
     }
     return matStr;
 }
