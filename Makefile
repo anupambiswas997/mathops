@@ -7,10 +7,11 @@ INCLUDEDIR := include
 SRCFILES := $(wildcard $(SRCDIR)/*.cpp)
 OBJFILES := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCFILES))
 DEPS := $(OBJFILES:.o=.d)
+LIB := $(BUILDDIR)/libmathops.a
 
 .PHONY: all clean
 
-all: test $(OBJFILES)
+all: test $(OBJFILES) $(LIB)
 
 show:
 	$(info Source-dir: $(SRCDIR))
@@ -27,6 +28,9 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 test: tests/tests.cpp $(OBJFILES)
 	$(CXX) -I $(INCLUDEDIR) $^ -o $@
+
+$(LIB): $(OBJFILES)
+	ar rcs $@ $^
 
 clean:
 	rm -rf $(BUILDDIR) $(OBJDIR)
