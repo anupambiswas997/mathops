@@ -65,7 +65,10 @@ void testCalculus()
     double (*func)(double) = &sin;
     double sin0ToPiIntegComputed = getIntegratedValue(&sin, 0, pi, 100);
     double sin0ToPiIntegFormula = -cos(pi) + cos(0);
-    cout << "Formula: " << sin0ToPiIntegFormula << ", computed: " << sin0ToPiIntegComputed << endl;
+    cout << "Integration of sin(x) from 0 to pi:" << endl;
+    cout << "Formula: " << sin0ToPiIntegFormula << ", computed: " << sin0ToPiIntegComputed << endl << endl;
+    cout << "Integration of ln(x) from 1 to e:" << endl;
+    cout << "Formula: 1, computed: " << getIntegratedValue(&log, 1, exp(1)) << endl << endl;
 }
 
 int main(int argc, char *argv[])
