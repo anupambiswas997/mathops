@@ -1,8 +1,10 @@
 #include <iostream>
+#include <cassert>
+#include <cmath>
 #include "linear_algebra.hpp"
 #include "random_quantities.hpp"
 #include "print_utils.hpp"
-#include <cassert>
+#include "calculus.hpp"
 
 using namespace std;
 
@@ -57,10 +59,20 @@ void testPrint()
     cout << "Matrix mat4:" << endl << getMatrixText(mat4, "   ") << endl;
 }
 
+void testCalculus()
+{
+    double pi = 4 * atan(1);
+    double (*func)(double) = &sin;
+    double sin0ToPiIntegComputed = getIntegratedValue(&sin, 0, pi, 100);
+    double sin0ToPiIntegFormula = -cos(pi) + cos(0);
+    cout << "Formula: " << sin0ToPiIntegFormula << ", computed: " << sin0ToPiIntegComputed << endl;
+}
+
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
     testRandomNumber();
     testPrint();
+    testCalculus();
     return 0;
 }
