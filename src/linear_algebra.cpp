@@ -123,7 +123,7 @@ The implementation of matrix multiplication is a naive one. In
 future, this will be changed to a more efficient one, probably
 employing Strassen's algorithm.
 */
-Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1)
+Matrix getProductOfMatrices(const Matrix& mat0, const Matrix& mat1)
 {
     Dimension dim0 = getMatrixDimensions(mat0);
     Dimension dim1 = getMatrixDimensions(mat1);
@@ -146,6 +146,16 @@ Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1)
     return result;
 }
 
+double getDotProduct(const Vector& vec0, const Vector& vec1)
+{
+    double sum = 0;
+    for(int i = 0; i < vec0.size(); i++)
+    {
+        sum += vec0[i] * vec1[i];
+    }
+    return sum;
+}
+
 Matrix getMatrixInverse(const Matrix& mat, bool debug)
 {
     // No inspection is performed here to verify if the matrix mat is square.
@@ -153,7 +163,7 @@ Matrix getMatrixInverse(const Matrix& mat, bool debug)
     assert (size > 0);
     Matrix iden = getIdentityMatrix(size);
     RowTransformer rowTransformer(debug);
-    Matrix matDup = duplicateMatrix(mat);
+    Matrix matDup = getDuplicateMatrix(mat);
     bool matrixInvertible = true; // assumed at the start
     if(debug)
     {
@@ -224,7 +234,7 @@ Matrix getTranspose(const Matrix& mat)
     return result;
 }
 
-Vector multiplyMatrixAndVector(const Matrix& mat, const Vector& vec)
+Vector getMatrixVectorProduct(const Matrix& mat, const Vector& vec)
 {
     Vector result = {};
     Dimension dim = getMatrixDimensions(mat);
@@ -260,6 +270,7 @@ bool isValidMatrix(const Matrix& mat)
 
 bool isInvertibleMatrix(const Matrix& mat)
 {
+    std::cout << "isInvertibleMatrix - not yet implemented (TODO)" << std::endl;
     return true;
 }
 
@@ -286,7 +297,7 @@ Matrix getIdentityMatrix(int size)
     return result;
 }
 
-Matrix duplicateMatrix(const Matrix& mat)
+Matrix getDuplicateMatrix(const Matrix& mat)
 {
     Matrix dup = {};
     for(int i = 0; i < mat.size(); i++)

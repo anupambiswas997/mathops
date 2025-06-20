@@ -10,15 +10,18 @@ A vector of vectors will be used to represent a matrix.
 
 #include "common_types.hpp"
 
-Matrix multiplyMatrices(const Matrix& mat0, const Matrix& mat1);
+// product of matrices and vectors
+Matrix getProductOfMatrices(const Matrix& mat0, const Matrix& mat1);
+Vector getMatrixVectorProduct(const Matrix& mat, const Vector& vec);
+double getDotProduct(const Vector& vec0, const Vector& vec1);
+
 Matrix getMatrixInverse(const Matrix& mat, bool debug=false);
 Matrix getTranspose(const Matrix& mat);
-Vector multiplyMatrixAndVector(const Matrix& mat, const Vector& vec);
 bool isValidMatrix(const Matrix& mat);
 bool isInvertibleMatrix(const Matrix& mat);
 Dimension getMatrixDimensions(const Matrix& mat);
 Matrix getIdentityMatrix(int size);
-Matrix duplicateMatrix(const Matrix& mat);
+Matrix getDuplicateMatrix(const Matrix& mat);
 
 /*
 RowTransformer helps to record a sequence of row transformations, so that they
