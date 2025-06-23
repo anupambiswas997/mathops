@@ -9,6 +9,10 @@ class Vector
 public:
     Vector();
     Vector(const std::vector<double>& data);
+    double& operator[](size_t i);
+    const double& operator[](size_t i) const;
+    Vector operator+(double c) const;
+    Vector operator+(const Vector& v) const;
 };
 
 #endif
