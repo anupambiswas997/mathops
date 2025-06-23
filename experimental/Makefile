@@ -13,9 +13,9 @@ main: matrix.o vectr.o main.cpp
 	g++ $^ -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	g++ -I$(INCLUDEDIR) -c $< -o $@
+	g++ -I$(INCLUDEDIR) -MMD -MP -c $< -o $@
 
 -include $(DEPS)
 
 clean:
-	rm -rf *.o main
+	rm -rf *.o main *.d

@@ -1,5 +1,6 @@
 #include "vectr.hpp"
 #include <cassert>
+#include "matrix.hpp"
 
 Vector::Vector()
 {
@@ -61,4 +62,20 @@ double Vector::dot(const Vector& v) const
         s += m_data[i] * v.m_data[i];
     }
     return s;
+}
+
+Vector Vector::operator*(const Matrix& m) const
+{
+    assert(m_data.size() == m.getData().size());
+    std::vector<double> r = {};
+    for(size_t j = 0; j < m.getData()[0].size(); j++)
+    {
+        double s = 0;
+        for(size_t i = 0; i < m.getData().size(); i++)
+        {
+            s += m_data[i] * m.getData()[i][j];
+        }
+        r.push_back(s);
+    }
+    return Vector(r);
 }

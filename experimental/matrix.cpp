@@ -92,3 +92,8 @@ Matrix Matrix::operator*(const Matrix& m) const
 {
     return (*this) * m.m_data;
 }
+
+const std::vector<std::vector<double> >& Matrix::getData() const
+{
+    return m_data;
+}

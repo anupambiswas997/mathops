@@ -16,6 +16,7 @@ public:
     Matrix operator*(double c) const;
     Matrix operator*(const std::vector<std::vector<double> >& d) const;
     Matrix operator*(const Matrix& m) const;
+    const std::vector<std::vector<double> >& getData() const;
 };
 
 #endif
