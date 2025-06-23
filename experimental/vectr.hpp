@@ -13,6 +13,8 @@ public:
     const double& operator[](size_t i) const;
     Vector operator+(double c) const;
     Vector operator+(const Vector& v) const;
+    Vector operator*(double c) const;
+    double dot(const Vector& v) const;
 };
 
 #endif

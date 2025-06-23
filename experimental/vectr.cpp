@@ -41,3 +41,24 @@ Vector Vector::operator+(const Vector& v) const
     }
     return Vector(r);
 }
+
+Vector Vector::operator*(double c) const
+{
+    std::vector<double> r = {};
+    for(const auto& x: m_data)
+    {
+        r.push_back(x * c);
+    }
+    return Vector(r);
+}
+
+double Vector::dot(const Vector& v) const
+{
+    assert(m_data.size() == v.m_data.size());
+    double s = 0;
+    for(size_t i = 0; i < m_data.size(); i++)
+    {
+        s += m_data[i] * v.m_data[i];
+    }
+    return s;
+}
