@@ -1,4 +1,5 @@
 #include "matrix.hpp"
+#include "vectr.hpp"
 #include <cassert>
 
 Matrix::Matrix()
@@ -91,6 +92,27 @@ Matrix Matrix::operator*(const std::vector<std::vector<double> >& d) const
 Matrix Matrix::operator*(const Matrix& m) const
 {
     return (*this) * m.m_data;
+}
+
+Vector Matrix::operator*(const std::vector<double>& d) const
+{
+    std::vector<double> r = {};
+    for(int i = 0; i < m_data.size(); i++)
+    {
+        assert(m_data[i].size() == d.size());
+        double sum = 0;
+        for(int j = 0; j < m_data[i].size(); j++)
+        {
+            sum += m_data[i][j] * d[j];
+        }
+        r.push_back(sum);
+    }
+    return Vector(r);
+}
+
+Vector Matrix::operator*(const Vector& v) const
+{
+    return (*this) * v.getData();
 }
 
 const std::vector<std::vector<double> >& Matrix::getData() const

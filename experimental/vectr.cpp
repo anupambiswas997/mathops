@@ -79,3 +79,8 @@ Vector Vector::operator*(const Matrix& m) const
     }
     return Vector(r);
 }
+
+const std::vector<double>& Vector::getData() const
+{
+    return m_data;
+}

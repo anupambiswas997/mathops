@@ -3,6 +3,8 @@
 
 #include <vector>
 
+class Vector;
+
 class Matrix
 {
     std::vector<std::vector<double> > m_data;
@@ -16,6 +18,8 @@ public:
     Matrix operator*(double c) const;
     Matrix operator*(const std::vector<std::vector<double> >& d) const;
     Matrix operator*(const Matrix& m) const;
+    Vector operator*(const std::vector<double>& d) const;
+    Vector operator*(const Vector& v) const;
     const std::vector<std::vector<double> >& getData() const;
 };
 

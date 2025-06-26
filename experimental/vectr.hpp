@@ -20,6 +20,7 @@ public:
     // intended use for the following multiplication with Matrix object:
     // as a row-vector being multiplied with a matrix
     Vector operator*(const Matrix& m) const;
+    const std::vector<double>& getData() const;
 };
 
 #endif
