@@ -8,6 +8,7 @@ class Vector;
 class Matrix
 {
     std::vector<std::vector<double> > m_data;
+    bool isDataValid() const;
 public:
     Matrix();
     Matrix(const std::vector<std::vector<double> >& data);
@@ -21,6 +22,11 @@ public:
     Vector operator*(const std::vector<double>& d) const;
     Vector operator*(const Vector& v) const;
     const std::vector<std::vector<double> >& getData() const;
+    Matrix getInverse() const;
+    // getTranspose() creates a completely new Matrix, whereas
+    // T(i, j) can be used read an element from its transpose directly
+    Matrix getTranspose() const;
+    double t(size_t i, size_t j) const;
 };
 
 #endif
