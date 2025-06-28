@@ -8,6 +8,8 @@ class Vector;
 class Matrix
 {
     std::vector<std::vector<double> > m_data;
+    size_t m_numRows;
+    size_t m_numColumns;
     bool isDataValid() const;
 public:
     Matrix();
@@ -27,6 +29,8 @@ public:
     // T(i, j) can be used read an element from its transpose directly
     Matrix getTranspose() const;
     double t(size_t i, size_t j) const;
+    size_t getNumRows() const;
+    size_t getNumColumns() const;
 };
 
 #endif
