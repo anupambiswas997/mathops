@@ -293,3 +293,32 @@ size_t Matrix::getNumColumns() const
 {
     return m_numColumns;
 }
+
+std::string Matrix::getText() const
+{
+    size_t maxLen = 0;
+    std::vector<std::vector<std::string> > matStr = {};
+    // Determine the maximum length of an element's string representation.
+    for(size_t i = 0; i < m_numRows; i++)
+    {
+        matStr.push_back({});
+        for(size_t j = 0; j < m_numColumns; j++)
+        {
+            std::string elemStr = std::to_string(m_data[i][j]);
+            matStr[i].push_back(elemStr);
+            maxLen = (maxLen < elemStr.length()) ? elemStr.length() : maxLen;
+        }
+    }
+    std::string matText = "";
+    for(size_t i = 0; i < m_numRows; i++)
+    {
+        for(size_t j = 0; j < m_numColumns; j++)
+        {
+            size_t lenDiff = maxLen - matStr[i][j].length();
+            std::string paddedElemStr = matStr[i][j] + ((lenDiff > 0) ? std::string(lenDiff, ' ') : "");
+            matText += (paddedElemStr + " ");
+        }
+        matText += "\n";
+    }
+    return matText;
+}

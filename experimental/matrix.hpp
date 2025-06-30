@@ -2,6 +2,7 @@
 #define MATRIX_HPP
 
 #include <vector>
+#include <string>
 
 class Vector;
 
@@ -31,6 +32,7 @@ public:
     double t(size_t i, size_t j) const;
     size_t getNumRows() const;
     size_t getNumColumns() const;
+    std::string getText() const;
 };
 
 #endif

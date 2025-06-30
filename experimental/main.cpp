@@ -52,12 +52,9 @@ void testMatrixInverse()
     Matrix m = getRandomMatrix(3, 3, 0.0, 1.0);
     Matrix mInv = m.getInverse();
     Matrix p = m * mInv;
-    cout << "Matrix to invert:" << endl;
-    showMatrix(m);
-    cout << endl << "Matrix inverse:" << endl;
-    showMatrix(mInv);
-    cout << endl << "Expecting identity matrix as product of the above two matrices:" << endl;
-    showMatrix(p);
+    cout << "Matrix to invert:" << endl << m.getText() << endl << endl;
+    cout << "Matrix inverse:" << endl << mInv.getText() << endl << endl;
+    cout << "Expecting identity matrix as product of the above two matrices:" << endl << p.getText() << endl;
 }
 
 int main(int argc, char *argv[])

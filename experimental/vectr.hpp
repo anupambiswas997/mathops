@@ -2,6 +2,7 @@
 #define VECTR_HPP
 
 #include <vector>
+#include <string>
 
 class Matrix;
 
@@ -21,6 +22,7 @@ public:
     // as a row-vector being multiplied with a matrix
     Vector operator*(const Matrix& m) const;
     const std::vector<double>& getData() const;
+    std::string getText() const;
 };
 
 #endif

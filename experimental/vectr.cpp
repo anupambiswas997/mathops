@@ -84,3 +84,23 @@ const std::vector<double>& Vector::getData() const
 {
     return m_data;
 }
+
+std::string Vector::getText() const
+{
+    size_t maxLen = 0;
+    std::vector<std::string> vecStr = {};
+    for(size_t i = 0; i < m_data.size(); i++)
+    {
+        std::string elemStr = std::to_string(m_data[i]);
+        maxLen = (maxLen < elemStr.length()) ? elemStr.length() : maxLen;
+        vecStr.push_back(elemStr);
+    }
+    std::string vecText = "";
+    for(size_t i = 0; i < m_data.size(); i++)
+    {
+        size_t lenDiff = maxLen - vecStr[i].length();
+        std::string paddedElemStr = vecStr[i] + ((lenDiff > 0) ? std::string(lenDiff, ' ') : "");
+        vecText += (paddedElemStr + " ");
+    }
+    return vecText;
+}
