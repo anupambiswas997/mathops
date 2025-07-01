@@ -1,4 +1,6 @@
 #include "random_quantities.hpp"
+#include "matrix.hpp"
+#include "vectr.hpp"
 #include <cstdlib>
 
 double getRandom(double start, double end)
@@ -8,22 +10,26 @@ double getRandom(double start, double end)
     return start + diff * frac;
 }
 
-Matrix getRandomMatrix(int numRows, int numColums, double start, double end)
+Matrix getRandomMatrix(size_t numRows, size_t numColumns, double start, double end)
 {
-    Matrix mat = {};
-    for(int i = 0; i < numRows; i++)
+    std::vector<std::vector<double> > data = {};
+    for(size_t i = 0; i < numRows; i++)
     {
-        mat.push_back(getRandomVector(numColums, start, end));
+        data.push_back({});
+        for(size_t j = 0; j < numColumns; j++)
+        {
+            data[i].push_back(getRandom(start, end));
+        }
     }
-    return mat;
+    return Matrix(data);
 }
 
-Vector getRandomVector(int vectorSize, double start, double end)
+Vector getRandomVector(size_t vectorSize, double start, double end)
 {
-    Vector vec = {};
-    for(int i = 0; i < vectorSize; i++)
+    std::vector<double> data = {};
+    for(size_t i = 0; i < vectorSize; i++)
     {
-        vec.push_back(getRandom(start, end));
+        data.push_back(getRandom(start, end));
     }
-    return vec;
+    return Vector(data);
 }

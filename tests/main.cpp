@@ -1,23 +1,8 @@
 #include <iostream>
 #include "matrix.hpp"
+#include "random_quantities.hpp"
 
 using namespace std;
-
-Matrix getRandomMatrix(size_t nrows, size_t ncols, double start=0, double end=1)
-{
-    double diff = end - start;
-    vector<vector<double> > r = {};
-    for(size_t i = 0; i < nrows; i++)
-    {
-        r.push_back({});
-        for(size_t j = 0; j < ncols; j++)
-        {
-            double randomValue = rand() / (RAND_MAX * 1.0);
-            r[i].push_back(start + randomValue * diff);
-        }
-    }
-    return Matrix(r);
-}
 
 void showMatrix(const Matrix& m, string indent="   ")
 {

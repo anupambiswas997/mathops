@@ -2,31 +2,49 @@ CXX := g++
 
 BUILDDIR := build
 OBJDIR := $(BUILDDIR)
-SRCDIR := src
 INCLUDEDIR := include
-SRCFILES := $(wildcard $(SRCDIR)/*.cpp)
-OBJFILES := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCFILES))
+# Source directories - these will pertain to the different math modules
+SRCDIR1 := src/calculus
+SRCDIR2 := src/linear_algebra
+SRCDIR3 := src/utils
+
+SRCFILES1 := $(wildcard $(SRCDIR1)/*.cpp)
+SRCFILES2 := $(wildcard $(SRCDIR2)/*.cpp)
+SRCFILES3 := $(wildcard $(SRCDIR3)/*.cpp)
+
+OBJFILES1 := $(patsubst $(SRCDIR1)/%.cpp, $(OBJDIR)/%.o, $(SRCFILES1))
+OBJFILES2 := $(patsubst $(SRCDIR2)/%.cpp, $(OBJDIR)/%.o, $(SRCFILES2))
+OBJFILES3 := $(patsubst $(SRCDIR3)/%.cpp, $(OBJDIR)/%.o, $(SRCFILES3))
+
+OBJFILES := $(OBJFILES1) $(OBJFILES2) $(OBJFILES3)
 DEPS := $(OBJFILES:.o=.d)
 LIB := $(BUILDDIR)/libmathops.a
+TEST := $(BUILDDIR)/test
 
 .PHONY: all clean
 
-all: test $(OBJFILES) $(LIB)
+all: $(TEST) $(OBJFILES) $(LIB)
 
 show:
-	$(info Source-dir: $(SRCDIR))
-	$(info Source-files: $(SRCFILES))
+	$(info Source-dirs: $(SRCDIR1) $(SRCDIR2) $(SRCDIR3))
+	$(info Source-files: $(SRCFILES1) $(SRCFILES2) $(SRCFILES3))
 	$(info Object-dir: $(OBJDIR))
 	$(info Object-files: $(OBJFILES))
 	$(info Deps: $(DEPS))
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	@mkdir -p $(OBJDIR)
-	$(CXX) -I $(INCLUDEDIR) -MMD -MP -c $< -o $@
+define BUILD_MODULE
+$(1)/%.o: $(2)/%.cpp
+	@mkdir -p $(1)
+	$(CXX) -I$(INCLUDEDIR) -MMD -MP -c $$< -o $$@
+endef
+
+$(eval $(call BUILD_MODULE, $(OBJDIR), $(SRCDIR1)))
+$(eval $(call BUILD_MODULE, $(OBJDIR), $(SRCDIR2)))
+$(eval $(call BUILD_MODULE, $(OBJDIR), $(SRCDIR3)))
 
 -include $(DEPS)
 
-test: tests/tests.cpp $(OBJFILES)
+$(TEST): tests/main.cpp $(OBJFILES)
 	$(CXX) -I $(INCLUDEDIR) $^ -o $@
 
 $(LIB): $(OBJFILES)
