@@ -21,7 +21,7 @@ DEPS := $(OBJFILES:.o=.d)
 LIB := $(BUILDDIR)/libmathops.a
 TEST := $(BUILDDIR)/test
 
-.PHONY: all clean
+.PHONY: all clean test
 
 all: $(TEST) $(OBJFILES) $(LIB)
 
@@ -52,3 +52,6 @@ $(LIB): $(OBJFILES)
 
 clean:
 	rm -rf $(BUILDDIR) $(OBJDIR)
+
+test: $(TEST)
+	./$(TEST)
