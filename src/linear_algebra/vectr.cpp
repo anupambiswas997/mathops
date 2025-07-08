@@ -32,6 +32,12 @@ Vector Vector::operator+(double c) const
     return Vector(r);
 }
 
+Vector Vector::operator-(double c) const
+{
+    double negativeC = -c;
+    return (*this) + negativeC;
+}
+
 Vector Vector::operator+(const Vector& v) const
 {
     assert(m_data.size() == v.m_data.size());
@@ -39,6 +45,17 @@ Vector Vector::operator+(const Vector& v) const
     for(size_t i = 0; i < m_data.size(); i++)
     {
         r.push_back(m_data[i] + v.m_data[i]);
+    }
+    return Vector(r);
+}
+
+Vector Vector::operator-(const Vector& v) const
+{
+    assert(m_data.size() == v.m_data.size());
+    std::vector<double> r = {};
+    for(size_t i = 0; i < m_data.size(); i++)
+    {
+        r.push_back(m_data[i] - v.m_data[i]);
     }
     return Vector(r);
 }

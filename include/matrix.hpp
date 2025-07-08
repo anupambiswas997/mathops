@@ -18,7 +18,9 @@ public:
     std::vector<double>& operator[](size_t i);
     const std::vector<double>& operator[](size_t i) const;
     Matrix operator+(double c) const;
+    Matrix operator-(double c) const;
     Matrix operator+(const Matrix& m) const;
+    Matrix operator-(const Matrix& m) const;
     Matrix operator*(double c) const;
     Matrix operator*(const std::vector<std::vector<double> >& d) const;
     Matrix operator*(const Matrix& m) const;

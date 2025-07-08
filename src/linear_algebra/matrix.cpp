@@ -76,6 +76,12 @@ Matrix Matrix::operator+(double c) const
     return Matrix(r);
 }
 
+Matrix Matrix::operator-(double c) const
+{
+    double negativeC = -c;
+    return (*this) + negativeC;
+}
+
 Matrix Matrix::operator+(const Matrix& m) const
 {
     assert(m_numRows == m.m_numRows);
@@ -87,6 +93,22 @@ Matrix Matrix::operator+(const Matrix& m) const
         for(size_t j = 0; j < m_numColumns; j++)
         {
             r[i].push_back(m_data[i][j] + m.m_data[i][j]);
+        }
+    }
+    return Matrix(r);
+}
+
+Matrix Matrix::operator-(const Matrix& m) const
+{
+    assert(m_numRows == m.m_numRows);
+    assert(m_numColumns == m.m_numColumns);
+    std::vector<std::vector<double> > r = {};
+    for(size_t i = 0; i < m_numRows; i++)
+    {
+        r.push_back({});
+        for(size_t j = 0; j < m_numColumns; j++)
+        {
+            r[i].push_back(m_data[i][j] - m.m_data[i][j]);
         }
     }
     return Matrix(r);
