@@ -23,3 +23,29 @@ size_t SparseVector::size() const
 {
     return m_size;
 }
+
+SparseVector SparseVector::operator+(double c) const
+{
+    SparseVector r(m_defaultValue + c, size());
+    for(const auto& e: m_data)
+    {
+        r[e.first] = e.second + c;
+    }
+    return r;
+}
+
+SparseVector SparseVector::operator-(double c) const
+{
+    double negativeC = -c;
+    return (*this) + negativeC;
+}
+
+SparseVector SparseVector::operator*(double c) const
+{
+    SparseVector r(m_defaultValue * c, size());
+    for(const auto& e: m_data)
+    {
+        r[e.first] = c * e.second;
+    }
+    return r;
+}

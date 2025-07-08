@@ -2,8 +2,7 @@
 #define SPARSE_MATRIX_HPP
 
 #include <map>
-
-class SparseVector;
+#include "sparse_vector.hpp"
 
 class SparseMatrix
 {
@@ -11,13 +10,16 @@ class SparseMatrix
     double m_defaultValue;
     size_t m_numRows;
     size_t m_numColumns;
-    const static SparseVector s_emptySparseVector;
+    const SparseVector m_defaultRowVector;
 public:
     SparseMatrix(double defaultValue=0, size_t numRows=0, size_t numColumns=0);
     size_t getNumRows() const;
     size_t getNumColumns() const;
     const SparseVector& operator[](size_t i) const;
     SparseVector& operator[](size_t i);
+    SparseMatrix operator+(double c) const;
+    SparseMatrix operator-(double c) const;
+    SparseMatrix operator*(double c) const;
 };
 
 #endif

@@ -13,6 +13,9 @@ public:
     const double& operator[](size_t i) const;
     double& operator[](size_t i);
     size_t size() const;
+    SparseVector operator+(double c) const;
+    SparseVector operator-(double c) const;
+    SparseVector operator*(double c) const;
 };
 
 #endif
