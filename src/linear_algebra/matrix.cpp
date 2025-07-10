@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include "templates_linalg.hpp"
 
 bool Matrix::isDataValid() const
 {
@@ -133,6 +134,13 @@ Matrix Matrix::operator*(const std::vector<std::vector<double> >& d) const
     bool bothMatricesNull = (m_data.size() == 0) && (d.size() == 0);
     bool bothMatricesNotNull = (m_data.size() != 0) && (d.size() != 0);
     assert(bothMatricesNull || bothMatricesNotNull);
+    if(d.size() == 0)
+    {
+        return Matrix();
+    }
+    assert(m_numColumns == d.size());
+    return getMatrixMatrixProduct(m_data, d, m_numRows, m_numColumns, d[0].size());
+    /*
     std::vector<std::vector<double> > r = {};
     for(size_t i = 0; i < m_numRows; i++)
     {
@@ -149,6 +157,7 @@ Matrix Matrix::operator*(const std::vector<std::vector<double> >& d) const
         }
     }
     return Matrix(r);
+    //*/
 }
 
 Matrix Matrix::operator*(const Matrix& m) const
@@ -158,6 +167,9 @@ Matrix Matrix::operator*(const Matrix& m) const
 
 Vector Matrix::operator*(const std::vector<double>& d) const
 {
+    assert(m_numColumns == d.size());
+    return (m_numRows == 0) ? Vector() : getMatrixVectorProduct(m_data, d, m_numRows, m_numColumns);
+    /*
     std::vector<double> r = {};
     for(size_t i = 0; i < m_numRows; i++)
     {
@@ -170,6 +182,7 @@ Vector Matrix::operator*(const std::vector<double>& d) const
         r.push_back(sum);
     }
     return Vector(r);
+    //*/
 }
 
 Vector Matrix::operator*(const Vector& v) const
@@ -318,6 +331,8 @@ size_t Matrix::getNumColumns() const
 
 std::string Matrix::getText() const
 {
+    return getMatrixText(m_data, m_numRows, m_numColumns);
+    /*
     size_t maxLen = 0;
     std::vector<std::vector<std::string> > matStr = {};
     // Determine the maximum length of an element's string representation.
@@ -343,4 +358,5 @@ std::string Matrix::getText() const
         matText += "\n";
     }
     return matText;
+    //*/
 }
