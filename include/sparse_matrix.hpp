@@ -4,6 +4,9 @@
 #include <map>
 #include "sparse_vector.hpp"
 
+class Matrix;
+class Vector;
+
 class SparseMatrix
 {
     std::map<size_t, SparseVector> m_data;
@@ -20,6 +23,10 @@ public:
     SparseMatrix operator+(double c) const;
     SparseMatrix operator-(double c) const;
     SparseMatrix operator*(double c) const;
+    Matrix operator*(const Matrix& m) const;
+    Matrix operator*(const SparseMatrix& sm) const;
+    Vector operator*(const Vector& v) const;
+    Vector operator*(const SparseVector& sv) const;
 };
 
 #endif

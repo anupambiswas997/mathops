@@ -1,6 +1,9 @@
 #include "sparse_matrix.hpp"
 #include <cassert>
 #include "sparse_vector.hpp"
+#include "matrix.hpp"
+#include "vectr.hpp"
+#include "templates_linalg.hpp"
 
 SparseMatrix::SparseMatrix(double defaultValue, size_t numRows, size_t numColumns)
 :m_defaultRowVector(SparseVector(defaultValue, numColumns))
@@ -56,4 +59,29 @@ SparseMatrix SparseMatrix::operator*(double c) const
         r[e.first] = e.second * c;
     }
     return r;
+}
+
+Matrix SparseMatrix::operator*(const Matrix& m) const
+{
+    assert(m_numColumns == m.getNumRows());
+    return getMatrixMatrixProduct((*this), m.getData(), m_numRows, m_numColumns, m.getNumColumns());
+}
+
+Matrix SparseMatrix::operator*(const SparseMatrix& sm) const
+{
+    assert(m_numColumns == sm.m_numRows);
+    return getMatrixMatrixProduct((*this), sm, m_numRows, m_numColumns, sm.getNumColumns());
+}
+
+Vector SparseMatrix::operator*(const Vector& v) const
+{
+    assert(m_numColumns == v.getData().size());
+    // REPLACE ABOVE WITH: v.size()
+    return getMatrixVectorProduct((*this), v.getData(), m_numRows, m_numColumns);
+}
+
+Vector SparseMatrix::operator*(const SparseVector& sv) const
+{
+    assert(m_numColumns == sv.size());
+    return getMatrixVectorProduct((*this), sv, m_numRows, m_numColumns);
 }

@@ -5,6 +5,8 @@
 #include <string>
 
 class Vector;
+class SparseMatrix;
+class SparseVector;
 
 class Matrix
 {
@@ -24,8 +26,10 @@ public:
     Matrix operator*(double c) const;
     Matrix operator*(const std::vector<std::vector<double> >& d) const;
     Matrix operator*(const Matrix& m) const;
+    Matrix operator*(const SparseMatrix& sm) const;
     Vector operator*(const std::vector<double>& d) const;
     Vector operator*(const Vector& v) const;
+    Vector operator*(const SparseVector& sv) const;
     const std::vector<std::vector<double> >& getData() const;
     Matrix getInverse() const;
     // getTranspose() creates a completely new Matrix, whereas

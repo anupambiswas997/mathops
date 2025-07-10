@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include "templates_linalg.hpp"
+#include "sparse_matrix.hpp"
 
 bool Matrix::isDataValid() const
 {
@@ -165,6 +166,12 @@ Matrix Matrix::operator*(const Matrix& m) const
     return (*this) * m.m_data;
 }
 
+Matrix Matrix::operator*(const SparseMatrix& sm) const
+{
+    assert(m_numColumns == sm.getNumRows());
+    return getMatrixMatrixProduct(m_data, sm, m_numRows, m_numColumns, sm.getNumColumns());
+}
+
 Vector Matrix::operator*(const std::vector<double>& d) const
 {
     assert(m_numColumns == d.size());
@@ -188,6 +195,12 @@ Vector Matrix::operator*(const std::vector<double>& d) const
 Vector Matrix::operator*(const Vector& v) const
 {
     return (*this) * v.getData();
+}
+
+Vector Matrix::operator*(const SparseVector& sv) const
+{
+    assert(m_numColumns == sv.size());
+    return getMatrixVectorProduct(m_data, sv, m_numRows, m_numColumns);
 }
 
 const std::vector<std::vector<double> >& Matrix::getData() const
