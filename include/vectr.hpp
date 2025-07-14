@@ -5,6 +5,7 @@
 #include <string>
 
 class Matrix;
+class SparseMatrix;
 class SparseVector;
 
 class Vector
@@ -27,9 +28,11 @@ public:
     // Multiplication methods
     Vector operator*(double c) const;
     double dot(const Vector& v) const;
+    double dot(const SparseVector& sv) const;
     // intended use for the following multiplication with Matrix object:
     // as a row-vector being multiplied with a matrix
     Vector operator*(const Matrix& m) const;
+    Vector operator*(const SparseMatrix& sm) const;
 
     const std::vector<double>& getData() const;
     std::string getText() const;

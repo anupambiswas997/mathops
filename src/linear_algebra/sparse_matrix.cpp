@@ -130,6 +130,12 @@ SparseMatrix SparseMatrix::operator*(double c) const
     return r;
 }
 
+Matrix SparseMatrix::operator*(const std::vector<std::vector<double> >& d) const
+{
+    assert(m_numColumns == d.size());
+    return getMatrixMatrixProduct((*this), d, m_numRows, m_numColumns, d[0].size());
+}
+
 Matrix SparseMatrix::operator*(const Matrix& m) const
 {
     assert(m_numColumns == m.getNumRows());
@@ -140,6 +146,12 @@ Matrix SparseMatrix::operator*(const SparseMatrix& sm) const
 {
     assert(m_numColumns == sm.m_numRows);
     return getMatrixMatrixProduct((*this), sm, m_numRows, m_numColumns, sm.getNumColumns());
+}
+
+Vector SparseMatrix::operator*(const std::vector<double>& d) const
+{
+    assert(m_numColumns == d.size());
+    return getMatrixVectorProduct((*this), d, m_numRows, m_numColumns);
 }
 
 Vector SparseMatrix::operator*(const Vector& v) const

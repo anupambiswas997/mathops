@@ -2,6 +2,8 @@
 #include <cassert>
 #include "vectr.hpp"
 #include "templates_linalg.hpp"
+#include "matrix.hpp"
+#include "sparse_matrix.hpp"
 
 SparseVector::SparseVector(double defaultValue, size_t size)
 {
@@ -96,6 +98,30 @@ SparseVector SparseVector::operator*(double c) const
         r[e.first] = c * e.second;
     }
     return r;
+}
+
+double SparseVector::dot(const Vector& v) const
+{
+    assert(m_size == v.size());
+    return getDotProduct((*this), v.getData(), m_size);
+}
+
+double SparseVector::dot(const SparseVector& sv) const
+{
+    assert(m_size == sv.m_size);
+    return getDotProduct((*this), sv, m_size);
+}
+
+Vector SparseVector::operator*(const Matrix& m) const
+{
+    assert(m_size == m.getNumRows());
+    return getVectorMatrixProduct((*this), m.getData(), m.getNumRows(), m.getNumColumns());
+}
+
+Vector SparseVector::operator*(const SparseMatrix& sm) const
+{
+    assert(m_size == sm.getNumRows());
+    return getVectorMatrixProduct((*this), sm, sm.getNumRows(), sm.getNumColumns());
 }
 
 const std::map<size_t, double>& SparseVector::getData() const

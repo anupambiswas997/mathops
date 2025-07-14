@@ -4,6 +4,8 @@
 #include <map>
 
 class Vector;
+class Matrix;
+class SparseMatrix;
 
 class SparseVector
 {
@@ -26,6 +28,10 @@ public:
 
     // Multiplication methods
     SparseVector operator*(double c) const;
+    double dot(const Vector& v) const;
+    double dot(const SparseVector& sv) const;
+    Vector operator*(const Matrix& m) const;
+    Vector operator*(const SparseMatrix& sm) const;
 
     const std::map<size_t, double>& getData() const;
 };

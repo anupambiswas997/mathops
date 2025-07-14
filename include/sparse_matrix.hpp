@@ -2,6 +2,7 @@
 #define SPARSE_MATRIX_HPP
 
 #include <map>
+#include <vector>
 #include "sparse_vector.hpp"
 
 class Matrix;
@@ -31,8 +32,10 @@ public:
 
     // Multiplication methods
     SparseMatrix operator*(double c) const;
+    Matrix operator*(const std::vector<std::vector<double> >& d) const;
     Matrix operator*(const Matrix& m) const;
     Matrix operator*(const SparseMatrix& sm) const;
+    Vector operator*(const std::vector<double>& d) const;
     Vector operator*(const Vector& v) const;
     Vector operator*(const SparseVector& sv) const;
 };

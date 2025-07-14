@@ -3,6 +3,7 @@
 #include "matrix.hpp"
 #include "templates_linalg.hpp"
 #include "sparse_vector.hpp"
+#include "sparse_matrix.hpp"
 
 Vector::Vector()
 {
@@ -80,10 +81,22 @@ double Vector::dot(const Vector& v) const
     return getDotProduct(m_data, v.m_data, m_data.size());
 }
 
+double Vector::dot(const SparseVector& sv) const
+{
+    assert(m_data.size() == sv.size());
+    return getDotProduct(m_data, sv, m_data.size());
+}
+
 Vector Vector::operator*(const Matrix& m) const
 {
     assert(m_data.size() == m.getData().size());
     return getVectorMatrixProduct(m_data, m.getData(), m.getNumRows(), m.getNumColumns());
+}
+
+Vector Vector::operator*(const SparseMatrix& sm) const
+{
+    assert(m_data.size() == sm.getNumRows());
+    return getVectorMatrixProduct(m_data, sm, sm.getNumRows(), sm.getNumColumns());
 }
 
 const std::vector<double>& Vector::getData() const
