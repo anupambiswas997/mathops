@@ -88,32 +88,28 @@ Matrix Matrix::operator+(const Matrix& m) const
 {
     assert(m_numRows == m.m_numRows);
     assert(m_numColumns == m.m_numColumns);
-    std::vector<std::vector<double> > r = {};
-    for(size_t i = 0; i < m_numRows; i++)
-    {
-        r.push_back({});
-        for(size_t j = 0; j < m_numColumns; j++)
-        {
-            r[i].push_back(m_data[i][j] + m.m_data[i][j]);
-        }
-    }
-    return Matrix(r);
+    return getMatrixSum((*this), m.m_data, m_numRows, m_numColumns);
 }
 
 Matrix Matrix::operator-(const Matrix& m) const
 {
     assert(m_numRows == m.m_numRows);
     assert(m_numColumns == m.m_numColumns);
-    std::vector<std::vector<double> > r = {};
-    for(size_t i = 0; i < m_numRows; i++)
-    {
-        r.push_back({});
-        for(size_t j = 0; j < m_numColumns; j++)
-        {
-            r[i].push_back(m_data[i][j] - m.m_data[i][j]);
-        }
-    }
-    return Matrix(r);
+    return getMatrixDiff((*this), m, m_numRows, m_numColumns);
+}
+
+Matrix Matrix::operator+(const SparseMatrix& sm) const
+{
+    assert(m_numRows == sm.getNumRows());
+    assert(m_numColumns == sm.getNumColumns());
+    return getMatrixSum((*this), sm, m_numRows, m_numColumns);
+}
+
+Matrix Matrix::operator-(const SparseMatrix& sm) const
+{
+    assert(m_numRows == sm.getNumRows());
+    assert(m_numColumns == sm.getNumColumns());
+    return getMatrixDiff((*this), sm, m_numRows, m_numColumns);
 }
 
 Matrix Matrix::operator*(double c) const
@@ -141,24 +137,6 @@ Matrix Matrix::operator*(const std::vector<std::vector<double> >& d) const
     }
     assert(m_numColumns == d.size());
     return getMatrixMatrixProduct(m_data, d, m_numRows, m_numColumns, d[0].size());
-    /*
-    std::vector<std::vector<double> > r = {};
-    for(size_t i = 0; i < m_numRows; i++)
-    {
-        assert(m_numColumns == d.size());
-        r.push_back({});
-        for(size_t j = 0; j < d[0].size(); j++)
-        {
-            double s = 0;
-            for(size_t k = 0; k < m_numColumns; k++)
-            {
-                s += m_data[i][k] * d[k][j];
-            }
-            r[i].push_back(s);
-        }
-    }
-    return Matrix(r);
-    //*/
 }
 
 Matrix Matrix::operator*(const Matrix& m) const
@@ -176,20 +154,6 @@ Vector Matrix::operator*(const std::vector<double>& d) const
 {
     assert(m_numColumns == d.size());
     return (m_numRows == 0) ? Vector() : getMatrixVectorProduct(m_data, d, m_numRows, m_numColumns);
-    /*
-    std::vector<double> r = {};
-    for(size_t i = 0; i < m_numRows; i++)
-    {
-        assert(m_numColumns == d.size());
-        double sum = 0;
-        for(size_t j = 0; j < m_numColumns; j++)
-        {
-            sum += m_data[i][j] * d[j];
-        }
-        r.push_back(sum);
-    }
-    return Vector(r);
-    //*/
 }
 
 Vector Matrix::operator*(const Vector& v) const
@@ -345,31 +309,4 @@ size_t Matrix::getNumColumns() const
 std::string Matrix::getText() const
 {
     return getMatrixText(m_data, m_numRows, m_numColumns);
-    /*
-    size_t maxLen = 0;
-    std::vector<std::vector<std::string> > matStr = {};
-    // Determine the maximum length of an element's string representation.
-    for(size_t i = 0; i < m_numRows; i++)
-    {
-        matStr.push_back({});
-        for(size_t j = 0; j < m_numColumns; j++)
-        {
-            std::string elemStr = std::to_string(m_data[i][j]);
-            matStr[i].push_back(elemStr);
-            maxLen = (maxLen < elemStr.length()) ? elemStr.length() : maxLen;
-        }
-    }
-    std::string matText = "";
-    for(size_t i = 0; i < m_numRows; i++)
-    {
-        for(size_t j = 0; j < m_numColumns; j++)
-        {
-            size_t lenDiff = maxLen - matStr[i][j].length();
-            std::string paddedElemStr = matStr[i][j] + ((lenDiff > 0) ? std::string(lenDiff, ' ') : "");
-            matText += (paddedElemStr + " ");
-        }
-        matText += "\n";
-    }
-    return matText;
-    //*/
 }

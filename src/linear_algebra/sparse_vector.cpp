@@ -49,3 +49,8 @@ SparseVector SparseVector::operator*(double c) const
     }
     return r;
 }
+
+const std::map<size_t, double>& SparseVector::getData() const
+{
+    return m_data;
+}

@@ -51,6 +51,75 @@ SparseMatrix SparseMatrix::operator-(double c) const
     return (*this) + negativeC;
 }
 
+Matrix SparseMatrix::operator+(const Matrix& m) const
+{
+    assert(m_numRows == m.getNumRows());
+    assert(m_numColumns == m.getNumColumns());
+    return getMatrixSum((*this), m.getData(), m_numRows, m_numColumns);
+}
+
+Matrix SparseMatrix::operator-(const Matrix& m) const
+{
+    assert(m_numRows == m.getNumRows());
+    assert(m_numColumns == m.getNumColumns());
+    return getMatrixDiff((*this), m.getData(), m_numRows, m_numColumns);
+}
+
+// Some thought may be put into optimizing the addition and subtraction between
+// SparseMatrix objects, as common indices of the two matrices, where non-default
+// values exist, are being accessed twice.
+SparseMatrix SparseMatrix::operator+(const SparseMatrix& sm) const
+{
+    assert(m_numRows == sm.m_numRows);
+    assert(m_numColumns == sm.m_numColumns);
+    SparseMatrix r(m_defaultValue + sm.m_defaultValue, m_numRows, m_numColumns);
+    for(const auto& e: m_data)
+    {
+        size_t i = e.first;
+        for(const auto& e2: e.second.getData())
+        {
+            size_t j = e2.first;
+            r[i][j] = e2.second + sm[i][j];
+        }
+    }
+    for(const auto& e: sm.m_data)
+    {
+        size_t i = e.first;
+        for(const auto& e2: e.second.getData())
+        {
+            size_t j = e2.first;
+            r[i][j] = (*this)[i][j] + sm[i][j];
+        }
+    }
+    return r;
+}
+
+SparseMatrix SparseMatrix::operator-(const SparseMatrix& sm) const
+{
+    assert(m_numRows == sm.m_numRows);
+    assert(m_numColumns == sm.m_numColumns);
+    SparseMatrix r(m_defaultValue + sm.m_defaultValue, m_numRows, m_numColumns);
+    for(const auto& e: m_data)
+    {
+        size_t i = e.first;
+        for(const auto& e2: e.second.getData())
+        {
+            size_t j = e2.first;
+            r[i][j] = e2.second - sm[i][j];
+        }
+    }
+    for(const auto& e: sm.m_data)
+    {
+        size_t i = e.first;
+        for(const auto& e2: e.second.getData())
+        {
+            size_t j = e2.first;
+            r[i][j] = (*this)[i][j] - sm[i][j];
+        }
+    }
+    return r;
+}
+
 SparseMatrix SparseMatrix::operator*(double c) const
 {
     SparseMatrix r(m_defaultValue * c, m_numRows, m_numColumns);

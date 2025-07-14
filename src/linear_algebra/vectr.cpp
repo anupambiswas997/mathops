@@ -42,23 +42,13 @@ Vector Vector::operator-(double c) const
 Vector Vector::operator+(const Vector& v) const
 {
     assert(m_data.size() == v.m_data.size());
-    std::vector<double> r = {};
-    for(size_t i = 0; i < m_data.size(); i++)
-    {
-        r.push_back(m_data[i] + v.m_data[i]);
-    }
-    return Vector(r);
+    return getVectorSum((*this), v.m_data, m_data.size());
 }
 
 Vector Vector::operator-(const Vector& v) const
 {
     assert(m_data.size() == v.m_data.size());
-    std::vector<double> r = {};
-    for(size_t i = 0; i < m_data.size(); i++)
-    {
-        r.push_back(m_data[i] - v.m_data[i]);
-    }
-    return Vector(r);
+    return getVectorDiff((*this), v.m_data, m_data.size());
 }
 
 Vector Vector::operator*(double c) const
@@ -75,32 +65,12 @@ double Vector::dot(const Vector& v) const
 {
     assert(m_data.size() == v.m_data.size());
     return getDotProduct(m_data, v.m_data, m_data.size());
-    /*
-    double s = 0;
-    for(size_t i = 0; i < m_data.size(); i++)
-    {
-        s += m_data[i] * v.m_data[i];
-    }
-    return s;
-    //*/
 }
 
 Vector Vector::operator*(const Matrix& m) const
 {
     assert(m_data.size() == m.getData().size());
     return getVectorMatrixProduct(m_data, m.getData(), m.getNumRows(), m.getNumColumns());
-    /*std::vector<double> r = {};
-    for(size_t j = 0; j < m.getData()[0].size(); j++)
-    {
-        double s = 0;
-        for(size_t i = 0; i < m.getData().size(); i++)
-        {
-            s += m_data[i] * m.getData()[i][j];
-        }
-        r.push_back(s);
-    }
-    return Vector(r);
-    //*/
 }
 
 const std::vector<double>& Vector::getData() const
@@ -111,21 +81,9 @@ const std::vector<double>& Vector::getData() const
 std::string Vector::getText() const
 {
     return getVectorText(m_data, m_data.size());
-    /*size_t maxLen = 0;
-    std::vector<std::string> vecStr = {};
-    for(size_t i = 0; i < m_data.size(); i++)
-    {
-        std::string elemStr = std::to_string(m_data[i]);
-        maxLen = (maxLen < elemStr.length()) ? elemStr.length() : maxLen;
-        vecStr.push_back(elemStr);
-    }
-    std::string vecText = "";
-    for(size_t i = 0; i < m_data.size(); i++)
-    {
-        size_t lenDiff = maxLen - vecStr[i].length();
-        std::string paddedElemStr = vecStr[i] + ((lenDiff > 0) ? std::string(lenDiff, ' ') : "");
-        vecText += (paddedElemStr + " ");
-    }
-    return vecText;
-    //*/
+}
+
+size_t Vector::size() const
+{
+    return m_data.size();
 }

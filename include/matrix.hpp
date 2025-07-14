@@ -19,10 +19,16 @@ public:
     Matrix(const std::vector<std::vector<double> >& data);
     std::vector<double>& operator[](size_t i);
     const std::vector<double>& operator[](size_t i) const;
+
+    // Addition and subtraction methods
     Matrix operator+(double c) const;
     Matrix operator-(double c) const;
     Matrix operator+(const Matrix& m) const;
     Matrix operator-(const Matrix& m) const;
+    Matrix operator+(const SparseMatrix& sm) const;
+    Matrix operator-(const SparseMatrix& sm) const;
+
+    // Multiplication methods
     Matrix operator*(double c) const;
     Matrix operator*(const std::vector<std::vector<double> >& d) const;
     Matrix operator*(const Matrix& m) const;
@@ -30,6 +36,7 @@ public:
     Vector operator*(const std::vector<double>& d) const;
     Vector operator*(const Vector& v) const;
     Vector operator*(const SparseVector& sv) const;
+
     const std::vector<std::vector<double> >& getData() const;
     Matrix getInverse() const;
     // getTranspose() creates a completely new Matrix, whereas

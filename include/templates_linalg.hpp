@@ -3,6 +3,58 @@
 
 #include <vector>
 
+template <typename VectorLikeA, typename VectorLikeB>
+std::vector<double> getVectorSum(const VectorLikeA& va, const VectorLikeB& vb, size_t size)
+{
+    std::vector<double> r = {};
+    for(size_t i = 0; i < size; i++)
+    {
+        r.push_back(va[i] + vb[i]);
+    }
+    return r;
+}
+
+template <typename VectorLikeA, typename VectorLikeB>
+std::vector<double> getVectorDiff(const VectorLikeA& va, const VectorLikeB& vb, size_t size)
+{
+    std::vector<double> r = {};
+    for(size_t i = 0; i < size; i++)
+    {
+        r.push_back(va[i] - vb[i]);
+    }
+    return r;
+}
+
+template <typename MatrixLikeA, typename MatrixLikeB>
+std::vector<std::vector<double> > getMatrixSum(const MatrixLikeA& ma, const MatrixLikeB& mb, size_t numRows, size_t numColumns)
+{
+    std::vector<std::vector<double> > r = {};
+    for(size_t i = 0; i < numRows; i++)
+    {
+        r.push_back({});
+        for(size_t j = 0; j < numColumns; j++)
+        {
+            r[i].push_back(ma[i][j] + mb[i][j]);
+        }
+    }
+    return r;
+}
+
+template <typename MatrixLikeA, typename MatrixLikeB>
+std::vector<std::vector<double> > getMatrixDiff(const MatrixLikeA& ma, const MatrixLikeB& mb, size_t numRows, size_t numColumns)
+{
+    std::vector<std::vector<double> > r = {};
+    for(size_t i = 0; i < numRows; i++)
+    {
+        r.push_back({});
+        for(size_t j = 0; j < numColumns; j++)
+        {
+            r[i].push_back(ma[i][j] - mb[i][j]);
+        }
+    }
+    return r;
+}
+
 template <typename MatrixLikeA, typename MatrixLikeB>
 std::vector<std::vector<double> > getMatrixMatrixProduct(const MatrixLikeA& ma, const MatrixLikeB& mb, size_t numRowsA, size_t numColumnsA, size_t numColumnsB)
 {

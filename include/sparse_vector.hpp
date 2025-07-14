@@ -13,9 +13,15 @@ public:
     const double& operator[](size_t i) const;
     double& operator[](size_t i);
     size_t size() const;
+
+    // Addition and subtraction methods
     SparseVector operator+(double c) const;
     SparseVector operator-(double c) const;
+
+    // Multiplication methods
     SparseVector operator*(double c) const;
+
+    const std::map<size_t, double>& getData() const;
 };
 
 #endif

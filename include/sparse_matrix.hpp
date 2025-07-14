@@ -20,8 +20,16 @@ public:
     size_t getNumColumns() const;
     const SparseVector& operator[](size_t i) const;
     SparseVector& operator[](size_t i);
+
+    // Addition and subtraction methods
     SparseMatrix operator+(double c) const;
     SparseMatrix operator-(double c) const;
+    Matrix operator+(const Matrix& m) const;
+    Matrix operator-(const Matrix& m) const;
+    SparseMatrix operator+(const SparseMatrix& sm) const;
+    SparseMatrix operator-(const SparseMatrix& sm) const;
+
+    // Multiplication methods
     SparseMatrix operator*(double c) const;
     Matrix operator*(const Matrix& m) const;
     Matrix operator*(const SparseMatrix& sm) const;
