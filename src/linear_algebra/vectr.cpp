@@ -2,6 +2,7 @@
 #include <cassert>
 #include "matrix.hpp"
 #include "templates_linalg.hpp"
+#include "sparse_vector.hpp"
 
 Vector::Vector()
 {
@@ -49,6 +50,18 @@ Vector Vector::operator-(const Vector& v) const
 {
     assert(m_data.size() == v.m_data.size());
     return getVectorDiff((*this), v.m_data, m_data.size());
+}
+
+Vector Vector::operator+(const SparseVector& sv) const
+{
+    assert(m_data.size() == sv.size());
+    return getVectorSum(m_data, sv, m_data.size());
+}
+
+Vector Vector::operator-(const SparseVector& sv) const
+{
+    assert(m_data.size() == sv.size());
+    return getVectorDiff(m_data, sv, m_data.size());
 }
 
 Vector Vector::operator*(double c) const

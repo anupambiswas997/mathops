@@ -5,6 +5,7 @@
 #include <string>
 
 class Matrix;
+class SparseVector;
 
 class Vector
 {
@@ -20,6 +21,8 @@ public:
     Vector operator-(double c) const;
     Vector operator+(const Vector& v) const;
     Vector operator-(const Vector& v) const;
+    Vector operator+(const SparseVector& sv) const;
+    Vector operator-(const SparseVector& sv) const;
 
     // Multiplication methods
     Vector operator*(double c) const;

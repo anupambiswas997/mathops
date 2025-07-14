@@ -3,6 +3,8 @@
 
 #include <map>
 
+class Vector;
+
 class SparseVector
 {
     std::map<size_t, double> m_data;
@@ -17,6 +19,10 @@ public:
     // Addition and subtraction methods
     SparseVector operator+(double c) const;
     SparseVector operator-(double c) const;
+    Vector operator+(const Vector& v) const;
+    Vector operator-(const Vector& v) const;
+    SparseVector operator+(const SparseVector& sv) const;
+    SparseVector operator-(const SparseVector& sv) const;
 
     // Multiplication methods
     SparseVector operator*(double c) const;

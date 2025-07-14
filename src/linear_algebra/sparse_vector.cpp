@@ -1,5 +1,7 @@
 #include "sparse_vector.hpp"
 #include <cassert>
+#include "vectr.hpp"
+#include "templates_linalg.hpp"
 
 SparseVector::SparseVector(double defaultValue, size_t size)
 {
@@ -38,6 +40,52 @@ SparseVector SparseVector::operator-(double c) const
 {
     double negativeC = -c;
     return (*this) + negativeC;
+}
+
+Vector SparseVector::operator+(const Vector& v) const
+{
+    assert(m_data.size() == v.size());
+    return getVectorSum((*this), v.getData(), m_data.size());
+}
+
+Vector SparseVector::operator-(const Vector& v) const
+{
+    assert(m_data.size() == v.size());
+    return getVectorDiff((*this), v.getData(), m_data.size());
+}
+
+SparseVector SparseVector::operator+(const SparseVector& sv) const
+{
+    assert(m_data.size() == sv.m_data.size());
+    SparseVector r(m_defaultValue + sv.m_defaultValue, m_data.size());
+    for(const auto& e: m_data)
+    {
+        size_t i = e.first;
+        r[i] = e.second + sv[i];
+    }
+    for(const auto& e: sv.m_data)
+    {
+        size_t i = e.first;
+        r[i] = (*this)[i] + sv[i];
+    }
+    return r;
+}
+
+SparseVector SparseVector::operator-(const SparseVector& sv) const
+{
+    assert(m_data.size() == sv.m_data.size());
+    SparseVector r(m_defaultValue + sv.m_defaultValue, m_data.size());
+    for(const auto& e: m_data)
+    {
+        size_t i = e.first;
+        r[i] = e.second - sv[i];
+    }
+    for(const auto& e: sv.m_data)
+    {
+        size_t i = e.first;
+        r[i] = (*this)[i] - sv[i];
+    }
+    return r;
 }
 
 SparseVector SparseVector::operator*(double c) const
