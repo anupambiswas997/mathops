@@ -32,6 +32,10 @@ const SparseVector& SparseMatrix::operator[](size_t i) const
 SparseVector& SparseMatrix::operator[](size_t i)
 {
     m_numRows = (i < m_numRows) ? m_numRows : (i + 1);
+    if(m_data.count(i) == 0)
+    {
+        m_data[i] = m_defaultRowVector;
+    }
     return m_data[i];
 }
 
@@ -165,4 +169,18 @@ Vector SparseMatrix::operator*(const SparseVector& sv) const
 {
     assert(m_numColumns == sv.size());
     return getMatrixVectorProduct((*this), sv, m_numRows, m_numColumns);
+}
+
+Matrix SparseMatrix::getFullMatrix() const
+{
+    std::vector<std::vector<double> > r = {};
+    for(size_t i = 0; i < m_numRows; i++)
+    {
+        r.push_back({});
+        for(size_t j = 0; j < m_numColumns; j++)
+        {
+            r[i].push_back((*this)[i][j]);
+        }
+    }
+    return r;
 }

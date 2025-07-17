@@ -38,6 +38,8 @@ public:
     Vector operator*(const std::vector<double>& d) const;
     Vector operator*(const Vector& v) const;
     Vector operator*(const SparseVector& sv) const;
+
+    Matrix getFullMatrix() const;
 };
 
 #endif
