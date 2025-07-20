@@ -6,10 +6,12 @@
 struct TestParams
 {
     std::string name;
+    std::string text;
     bool passed;
-    TestParams(std::string tName, bool tPassed)
+    TestParams(std::string tName, std::string tText, bool tPassed)
     {
         name = tName;
+        text = tText;
         passed = tPassed;
     }
 };
@@ -30,7 +32,7 @@ double getMaximumAbsDiff(const MatrixTypeA& ma, const MatrixTypeB& mb, size_t nu
 }
 
 template <typename MatrixTypeA, typename MatrixTypeB>
-bool equals(const MatrixTypeA& ma, const MatrixTypeB& mb, size_t numRows, size_t numColumns, double tolerance)
+bool areEqual(const MatrixTypeA& ma, const MatrixTypeB& mb, size_t numRows, size_t numColumns, double tolerance)
 {
     double maxDiff = getMaximumAbsDiff(ma, mb, numRows, numColumns);
     return (maxDiff <= tolerance);
@@ -49,7 +51,7 @@ double getMaximumAbsDiff(const VectorTypeA& va, const VectorTypeB& vb, size_t si
 }
 
 template <typename VectorTypeA, typename VectorTypeB>
-bool equals(const VectrorTypeA& va, const VectorTypeB& vb, size_t size, double tolerance)
+bool areEqual(const VectorTypeA& va, const VectorTypeB& vb, size_t size, double tolerance)
 {
     double maxDiff = getMaximumAbsDiff(va, vb, size);
     return (maxDiff <= tolerance);
