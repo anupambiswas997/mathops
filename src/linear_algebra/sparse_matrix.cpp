@@ -184,3 +184,8 @@ Matrix SparseMatrix::getFullMatrix() const
     }
     return r;
 }
+
+std::string SparseMatrix::getText() const
+{
+    return getMatrixText((*this), m_numRows, m_numColumns);
+}

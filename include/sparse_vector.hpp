@@ -2,6 +2,7 @@
 #define SPARSE_VECTOR_HPP
 
 #include <map>
+#include <string>
 
 class Vector;
 class Matrix;
@@ -34,6 +35,7 @@ public:
     Vector operator*(const SparseMatrix& sm) const;
 
     const std::map<size_t, double>& getData() const;
+    std::string getText() const;
 };
 
 #endif

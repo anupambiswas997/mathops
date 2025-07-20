@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include "sparse_vector.hpp"
+#include <string>
 
 class Matrix;
 class Vector;
@@ -40,6 +41,7 @@ public:
     Vector operator*(const SparseVector& sv) const;
 
     Matrix getFullMatrix() const;
+    std::string getText() const;
 };
 
 #endif

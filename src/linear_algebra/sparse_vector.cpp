@@ -128,3 +128,8 @@ const std::map<size_t, double>& SparseVector::getData() const
 {
     return m_data;
 }
+
+std::string SparseVector::getText() const
+{
+    return getVectorText((*this), m_size);
+}
