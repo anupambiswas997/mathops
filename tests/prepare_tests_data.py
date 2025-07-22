@@ -141,7 +141,7 @@ def txtfunc(ty):
         'sv': get_sparse_vector_text
     }[ty]
 
-def create_test(typa, dima, typb, dimb, oper, test_name):
+def get_test(typa, dima, typb, dimb, oper, test_name):
     a, a_np = varfunc(typa)(-5, 5, dima)
     b, b_np = varfunc(typb)(-5, 5, dimb)
     a_txt = txtfunc(typa)(a, 'a')
@@ -153,29 +153,104 @@ def create_test(typa, dima, typb, dimb, oper, test_name):
     elif oper == '-':
         r_np = a_np - b_np
     if oper == 'dot':
-        op_text = "a.dot(b)"
-        check_text = f"bool passed = ({op_text} == {r_np});"
+        r_txt = f"double expected = {r_np};"
+        op_txt = "a.dot(b)"
+        check_txt = f"bool passed = ({op_txt} == expected);"
     else:
         if len(r_np.shape) == 2:
             r_txt = get_matrix_text(r_np, 'expected').replace('Matrix', 'vector<vector<double> >')
-            dimtext = f"{r_np.shape[0]}, {r_np.shape[1]}"
+            dim_txt = f"{r_np.shape[0]}, {r_np.shape[1]}"
         else:
             r_txt = get_vector_text(r_np, 'expected').replace('Vector', 'vector<double>')
-            dimtext = f"{r_np.shape[0]}"
-        op_text = f"a {oper} b"
-        check_txt = f"bool passed = areEqual({op_text}, expected, {dimtext}, 1.0e-8);"
+            dim_txt = f"{r_np.shape[0]}"
+        op_txt = f"a {oper} b"
+        check_txt = f"bool passed = areEqual({op_txt}, expected, {dim_txt}, 1.0e-8);"
     test_params_txt = f"testParamsList.push_back(TestParams(\"{test_name}\", passed));"
-    test_code = "{\n" + indent("\n".join([a_txt, b_txt, check_txt, test_params_txt]), "    ") + "\n}"
-    print(test_code)
+    msg_txt = f"cout << \"TEST: {test_name}\" << endl;"
+    res_txt = f"cout << \"    passed: \" << passed << endl;"
+    test_code = "{\n" + indent("\n".join([msg_txt, a_txt, b_txt, r_txt, check_txt, test_params_txt, res_txt]), "    ") + "\n}"
+    #print(test_code)
     return test_code
+
+def get_test_suite():
+    opers = {
+        '*': [
+            ['m', 'm'], ['m', 'sm'], ['m', 'v'], ['m', 'sv'],
+            ['sm', 'm'], ['sm', 'sm'], ['sm', 'v'], ['sm', 'sv'],
+            ['v', 'm'], ['v', 'sm'],
+            ['sv', 'm'], ['sv', 'sm']
+        ],
+        'dot': [
+            ['v', 'v'], ['v', 'sv'],
+            ['sv', 'v'], ['sv', 'v']
+        ],
+        '+': [
+            ['m', 'm'], ['m', 'sm'],
+            ['sm', 'm'], ['sm', 'sm'],
+            ['v', 'v'], ['v', 'sv'],
+            ['sv', 'v'], ['sv', 'sv']
+        ],
+        '-': [
+            ['m', 'm'], ['m', 'sm'],
+            ['sm', 'm'], ['sm', 'sm'],
+            ['v', 'v'], ['v', 'sv'],
+            ['sv', 'v'], ['sv', 'sv']
+        ]
+    }
+    test_codes = []
+    full_names = {'m': 'Matrix', 'v': 'Vector', 'sm': 'SparseMatrix', 'sv': 'SparseVector'}
+    for op,oplist in opers.items():
+        for typa, typb in oplist:
+            test_name = f"{full_names[typa]} {op} {full_names[typb]}"
+            n1 = random.randrange(5, 10)
+            n2 = random.randrange(5, 10)
+            n3 = random.randrange(5, 10)
+            if op in ['+', '-']:
+                dima = (n1, n2) if 'm' in typa else (n1,)
+                dimb = dima
+            elif op == '*':
+                dima = (n1, n2) if 'm' in typa else (n2,)
+                dimb = (n2, n3) if 'm' in typb else (n2,)
+            elif op == 'dot':
+                dima = (n1,)
+                dimb = dima
+            test_code = get_test(typa, dima, typb, dimb, op, test_name)
+            print(test_code)
+            test_codes.append(test_code)
+    with open("tests/t.cpp", "w") as f:
+        f.write("""
+#include "test_base.hpp"
+#include <vector>
+
+using namespace std;
+
+vector<TestParams> performLinearAlgebraTests()
+{
+    vector<TestParams> testParamsList = {};
+
+""" + indent("\n".join(test_codes), "    ") + """ 
+    return testParamsList;
+}
+
+int main(int argc, char *argv[])
+{
+    vector<TestParams> testResults = performLinearAlgebraTests();
+    for(const auto& tParam: testResults)
+    {
+        cout << tParam.name << ": " << (tParam.passed ? "PASS" : "FAIL") << endl;
+    }
+    return 0;
+}
+""")
 
 if __name__ == '__main__':
     #print(get_random_sparse_mat(-2, 2, 3, 4, 5))
     #print("\n".join([f"i={i},j={j}" for i in range(3) for j in range(6,9)]))
-    print(get_matrix_text(get_random_matvec(0, 1, (3, 4))[0], "ma"))
-    print(get_vector_text(get_random_matvec(-2, 2, (5,))[0], "vb"))
-    print(get_sparse_matrix_text(get_random_sparse_mat(-3, 3, 4, 3, 5)[0], "smc"))
-    print(get_sparse_vector_text(get_random_sparse_vec(-10, 10, 20, 7)[0], "svd"))
-    print(get_sparse_matrix_text(get_random_spmatvec(15, 20, (2, 3))[0], "sme"))
-    print(get_sparse_vector_text(get_random_spmatvec(0, 4, (3,))[0], "svf"))
-    create_test('m', (5, 3), 'sm', (3, 4), '*', "Matrix * SparseMatrix")
+    #print(get_matrix_text(get_random_matvec(0, 1, (3, 4))[0], "ma"))
+    #print(get_vector_text(get_random_matvec(-2, 2, (5,))[0], "vb"))
+    #print(get_sparse_matrix_text(get_random_sparse_mat(-3, 3, 4, 3, 5)[0], "smc"))
+    #print(get_sparse_vector_text(get_random_sparse_vec(-10, 10, 20, 7)[0], "svd"))
+    #print(get_sparse_matrix_text(get_random_spmatvec(15, 20, (2, 3))[0], "sme"))
+    #print(get_sparse_vector_text(get_random_spmatvec(0, 4, (3,))[0], "svf"))
+    #get_test('m', (5, 3), 'sm', (3, 4), '*', "Matrix * SparseMatrix")
+    get_test_suite()

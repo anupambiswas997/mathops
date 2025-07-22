@@ -11,12 +11,12 @@
 struct TestParams
 {
     std::string name;
-    std::string text;
+    //std::string text;
     bool passed;
-    TestParams(std::string tName, std::string tText, bool tPassed)
+    TestParams(std::string tName, bool tPassed)//std::string tText, bool tPassed)
     {
         name = tName;
-        text = tText;
+        //text = tText;
         passed = tPassed;
     }
 };

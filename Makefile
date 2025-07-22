@@ -44,7 +44,7 @@ $(eval $(call BUILD_MODULE, $(OBJDIR), $(SRCDIR3)))
 
 -include $(DEPS)
 
-$(TEST): tests/main.cpp $(OBJFILES)
+$(TEST): tests/t.cpp $(OBJFILES)
 	$(CXX) -I $(INCLUDEDIR) $^ -o $@
 
 $(LIB): $(OBJFILES)
