@@ -92,6 +92,12 @@ def get_random_sparse_mat(start, end, nrows, ncols, num_elems):
     spmat = (nrows, ncols, defval, content,)
     return spmat, spmat_np
 
+def get_random_spmatvec(start, end, dim):
+    is_vector = len(dim) == 1
+    # 40% filling for sparse vector/matrix
+    num_elems = int(0.4 * dim[0]) if is_vector else int(0.4 * dim[0] * dim[1])
+    return get_random_sparse_vec(start, end, dim[0], num_elems) if is_vector else get_random_sparse_mat(start, end, dim[0], dim[1], num_elems)
+
 def indent(text, ind):
     return "\n".join([f"{ind}{l}" for l in text.split("\n")])
 
@@ -124,8 +130,44 @@ def get_sparse_vector_text(sv, var_name):
     return sv_text
 
 # create_test('m', (5, 3), 'sm', (3, 4), '*')
-def create_test(typ1, dim1, typ2, dim2, oper):
-    pass
+def varfunc(ty):
+    return get_random_spmatvec if 's' in ty else get_random_matvec
+
+def txtfunc(ty):
+    return {
+        'm': get_matrix_text,
+        'v': get_vector_text,
+        'sm': get_sparse_matrix_text,
+        'sv': get_sparse_vector_text
+    }[ty]
+
+def create_test(typa, dima, typb, dimb, oper, test_name):
+    a, a_np = varfunc(typa)(-5, 5, dima)
+    b, b_np = varfunc(typb)(-5, 5, dimb)
+    a_txt = txtfunc(typa)(a, 'a')
+    b_txt = txtfunc(typb)(b, 'b')
+    if oper in ['*', 'dot']:
+        r_np = a_np.dot(b_np)
+    elif oper == '+':
+        r_np = a_np + b_np
+    elif oper == '-':
+        r_np = a_np - b_np
+    if oper == 'dot':
+        op_text = "a.dot(b)"
+        check_text = f"bool passed = ({op_text} == {r_np});"
+    else:
+        if len(r_np.shape) == 2:
+            r_txt = get_matrix_text(r_np, 'expected').replace('Matrix', 'vector<vector<double> >')
+            dimtext = f"{r_np.shape[0]}, {r_np.shape[1]}"
+        else:
+            r_txt = get_vector_text(r_np, 'expected').replace('Vector', 'vector<double>')
+            dimtext = f"{r_np.shape[0]}"
+        op_text = f"a {oper} b"
+        check_txt = f"bool passed = areEqual({op_text}, expected, {dimtext}, 1.0e-8);"
+    test_params_txt = f"testParamsList.push_back(TestParams(\"{test_name}\", passed));"
+    test_code = "{\n" + indent("\n".join([a_txt, b_txt, check_txt, test_params_txt]), "    ") + "\n}"
+    print(test_code)
+    return test_code
 
 if __name__ == '__main__':
     #print(get_random_sparse_mat(-2, 2, 3, 4, 5))
@@ -134,3 +176,6 @@ if __name__ == '__main__':
     print(get_vector_text(get_random_matvec(-2, 2, (5,))[0], "vb"))
     print(get_sparse_matrix_text(get_random_sparse_mat(-3, 3, 4, 3, 5)[0], "smc"))
     print(get_sparse_vector_text(get_random_sparse_vec(-10, 10, 20, 7)[0], "svd"))
+    print(get_sparse_matrix_text(get_random_spmatvec(15, 20, (2, 3))[0], "sme"))
+    print(get_sparse_vector_text(get_random_spmatvec(0, 4, (3,))[0], "svf"))
+    create_test('m', (5, 3), 'sm', (3, 4), '*', "Matrix * SparseMatrix")
