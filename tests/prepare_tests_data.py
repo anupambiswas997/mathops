@@ -119,6 +119,29 @@ def get_test(typa, dima, typb, dimb, oper, test_name):
     #print(test_code)
     return test_code
 
+def get_const_test(typ, dim, oper, test_name):
+    msg_txt = f"testName = \"{test_name}\";\ncout << \"TEST: \" << testName << endl;"
+    a, a_np = varfunc(typ)(-5, 5, dim)
+    a_txt = txtfunc(typ)(a, 'a')
+    c = np.random.random() * 10 - 5 # between -5 and 5
+    c_txt = f"double c = {c};"
+    if oper == '+':
+        r_np = a_np + c
+    elif oper == '-':
+        r_np = a_np - c
+    elif oper == '*':
+        r_np = a_np * c
+    if len(dim) == 1:
+        r_txt = get_vector_text(r_np, 'expected').replace('Vector', 'vector<double>')
+    elif len(dim) == 2:
+        r_txt = get_matrix_text(r_np, 'expected').replace('Matrix', 'vector<vector<double> >')
+    op_txt = f"a {oper} c"
+    dim_txt = f"{dim[0]}" if len(dim) == 1 else f"{dim[0]}, {dim[1]}"
+    check_txt = f"passed = areEqual({op_txt}, expected, {dim_txt}, 1.0e-8);"
+    test_params_txt = "testParamsList.push_back(TestParams(testName, passed));"
+    test_code = "{\n" + indent("\n".join([msg_txt, a_txt, c_txt, r_txt, check_txt, test_params_txt]), "    ") + "\n}"
+    return test_code
+
 def get_test_suite():
     opers = {
         '*': [
@@ -164,6 +187,13 @@ def get_test_suite():
             test_code = get_test(typa, dima, typb, dimb, op, test_name)
             print(test_code)
             test_codes.append(test_code)
+    for op in ['+', '-', '*']:
+        for ty in ['m', 'sm', 'v', 'sv']:
+            test_name = f"{full_names[ty]} {op} constant"
+            n1 = random.randrange(5, 8)
+            n2 = random.randrange(5, 8)
+            dim = (n1, n2) if 'm' in ty else (n1,)
+            test_codes.append(get_const_test(ty, dim, op, test_name))
     with open("tests/linear_algebra_tests.hpp", "w") as f:
         f.write("""
 #include "test_base.hpp"
