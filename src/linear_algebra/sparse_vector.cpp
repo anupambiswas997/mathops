@@ -30,7 +30,7 @@ size_t SparseVector::size() const
 
 SparseVector SparseVector::operator+(double c) const
 {
-    SparseVector r(m_defaultValue + c, size());
+    SparseVector r(m_defaultValue + c, m_size);
     for(const auto& e: m_data)
     {
         r[e.first] = e.second + c;
@@ -46,20 +46,20 @@ SparseVector SparseVector::operator-(double c) const
 
 Vector SparseVector::operator+(const Vector& v) const
 {
-    assert(m_data.size() == v.size());
-    return getVectorSum((*this), v.getData(), m_data.size());
+    assert(m_size == v.size());
+    return getVectorSum((*this), v.getData(), m_size);
 }
 
 Vector SparseVector::operator-(const Vector& v) const
 {
-    assert(m_data.size() == v.size());
-    return getVectorDiff((*this), v.getData(), m_data.size());
+    assert(m_size == v.size());
+    return getVectorDiff((*this), v.getData(), m_size);
 }
 
 SparseVector SparseVector::operator+(const SparseVector& sv) const
 {
-    assert(m_data.size() == sv.m_data.size());
-    SparseVector r(m_defaultValue + sv.m_defaultValue, m_data.size());
+    assert(m_size == sv.m_size);
+    SparseVector r(m_defaultValue + sv.m_defaultValue, m_size);
     for(const auto& e: m_data)
     {
         size_t i = e.first;
@@ -75,8 +75,8 @@ SparseVector SparseVector::operator+(const SparseVector& sv) const
 
 SparseVector SparseVector::operator-(const SparseVector& sv) const
 {
-    assert(m_data.size() == sv.m_data.size());
-    SparseVector r(m_defaultValue + sv.m_defaultValue, m_data.size());
+    assert(m_size == sv.m_size);
+    SparseVector r(m_defaultValue - sv.m_defaultValue, m_size);
     for(const auto& e: m_data)
     {
         size_t i = e.first;
@@ -92,7 +92,7 @@ SparseVector SparseVector::operator-(const SparseVector& sv) const
 
 SparseVector SparseVector::operator*(double c) const
 {
-    SparseVector r(m_defaultValue * c, size());
+    SparseVector r(m_defaultValue * c, m_size);
     for(const auto& e: m_data)
     {
         r[e.first] = c * e.second;

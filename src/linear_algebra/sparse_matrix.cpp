@@ -102,7 +102,7 @@ SparseMatrix SparseMatrix::operator-(const SparseMatrix& sm) const
 {
     assert(m_numRows == sm.m_numRows);
     assert(m_numColumns == sm.m_numColumns);
-    SparseMatrix r(m_defaultValue + sm.m_defaultValue, m_numRows, m_numColumns);
+    SparseMatrix r(m_defaultValue - sm.m_defaultValue, m_numRows, m_numColumns);
     for(const auto& e: m_data)
     {
         size_t i = e.first;

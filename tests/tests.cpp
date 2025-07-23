@@ -24,6 +24,7 @@ void tabulateResults(const vector<TestParams>& testResults)
         string tPassed = tP.passed ? "PASS" : "FAIL";
         cout << "  " << tName << ": " << tPassed << endl;
     }
+    cout << endl << "Passed: " << numPassed << "/" << testResults.size() << endl;
 }
 
 void testAll()

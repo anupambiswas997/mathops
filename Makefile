@@ -19,7 +19,9 @@ OBJFILES3 := $(patsubst $(SRCDIR3)/%.cpp, $(OBJDIR)/%.o, $(SRCFILES3))
 OBJFILES := $(OBJFILES1) $(OBJFILES2) $(OBJFILES3)
 DEPS := $(OBJFILES:.o=.d)
 LIB := $(BUILDDIR)/libmathops.a
-TEST := $(BUILDDIR)/test
+TESTSDIR := tests
+TEST := $(TESTSDIR)/test
+TEST_HEADERS := $(TESTSDIR)/linear_algebra_tests.hpp
 
 .PHONY: all clean test
 
@@ -44,7 +46,7 @@ $(eval $(call BUILD_MODULE, $(OBJDIR), $(SRCDIR3)))
 
 -include $(DEPS)
 
-$(TEST): tests/tests.cpp $(OBJFILES)
+$(TEST): tests/tests.cpp $(TEST_HEADERS) $(OBJFILES)
 	$(CXX) -I $(INCLUDEDIR) $^ -o $@
 
 $(LIB): $(OBJFILES)

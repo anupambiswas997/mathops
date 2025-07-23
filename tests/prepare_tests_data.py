@@ -171,7 +171,7 @@ def get_test_suite():
 
 using namespace std;
 
-void performLinearAlgebraTests(vector<TestParams> testParamsList)
+void performLinearAlgebraTests(vector<TestParams>& testParamsList)
 {
     string testName;
     bool passed;
