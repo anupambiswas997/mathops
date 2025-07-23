@@ -142,6 +142,31 @@ def get_const_test(typ, dim, oper, test_name):
     test_code = "{\n" + indent("\n".join([msg_txt, a_txt, c_txt, r_txt, check_txt, test_params_txt]), "    ") + "\n}"
     return test_code
 
+def get_inverse_tests():
+    # matrix inverse test code
+    msg_txt = f"testName = \"Matrix inverse\";cout << \"TEST: \" << testName << endl;"
+    n = random.randrange(5, 8)
+    a, a_np = get_random_matvec(-5, 5, (n, n))
+    a_txt = get_matrix_text(a, 'a')
+    ainv_np = np.linalg.inv(a_np)
+    r_txt = get_matrix_text(ainv_np, 'expected').replace('Matrix', 'vector<vector<double> >')
+    check_txt = f"passed = areEqual(a.getInverse(), expected, {n}, {n}, 1.0e-8);"
+    test_params_txt = "testParamsList.push_back(TestParams(testName, passed));"
+    test_code_mat = "{\n" + indent("\n".join([msg_txt, a_txt, r_txt, check_txt, test_params_txt]), "    ") + "\n}"
+
+    # sparse matrix inverse test code
+    msg_txt = f"testName = \"SparseMatrix inverse\";cout << \"TEST: \" << testName << endl;"
+    n = random.randrange(5, 8)
+    a, a_np = get_random_spmatvec(-5, 5, (n, n))
+    a_txt = get_sparse_matrix_text(a, 'a')
+    ainv_np = np.linalg.inv(a_np)
+    r_txt = get_matrix_text(ainv_np, 'expected').replace('Matrix', 'vector<vector<double> >')
+    check_txt = f"passed = areEqual(a.getFullMatrix().getInverse(), expected, {n}, {n}, 1.0e-8);"
+    test_params_txt = "testParamsList.push_back(TestParams(testName, passed));"
+    test_code_spmat = "{\n" + indent("\n".join([msg_txt, a_txt, r_txt, check_txt, test_params_txt]), "    ") + "\n}"
+
+    return [test_code_mat, test_code_spmat]
+
 def get_test_suite():
     opers = {
         '*': [
@@ -194,6 +219,7 @@ def get_test_suite():
             n2 = random.randrange(5, 8)
             dim = (n1, n2) if 'm' in ty else (n1,)
             test_codes.append(get_const_test(ty, dim, op, test_name))
+    test_codes.extend(get_inverse_tests())
     with open("tests/linear_algebra_tests.hpp", "w") as f:
         f.write("""
 #include "test_base.hpp"
