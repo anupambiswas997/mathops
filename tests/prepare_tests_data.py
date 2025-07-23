@@ -1,3 +1,29 @@
+"""
+PURPOSE OF SCRIPT:
+This script is used to auto-generate linear algebra tests, in the file
+'linear_algebra_tests.hpp'. In linear algebra, there are multiplication,
+addition and subtraction operations between objects of the following kind:
+  - Matrix
+  - SparseMatrix
+  - Vector
+  - SparseVector
+Also, each of the above classes also have similar operations with constants.
+Plus, there are matrix inversion tests for two matrix classes. In total,
+there are about 46 tests, and hand-writing them is time-consuming, and also
+prone to error. So, this script facilitates that task and uses Python's
+numpy library to generated the expected answers for the matrix and vector
+operations.
+
+USAGE:
+From repository root, issue the following command:
+
+  > python tests/prepare_tests_data.py
+
+This, however will overwrite the version-controlled file 'linear_algebra_tests.hpp'.
+So, if the newly generated version of the file is needed, it must be staged and
+committed again.
+"""
+
 import random
 import numpy as np
 

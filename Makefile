@@ -53,7 +53,7 @@ $(LIB): $(OBJFILES)
 	ar rcs $@ $^
 
 clean:
-	rm -rf $(BUILDDIR) $(OBJDIR)
+	rm -rf $(BUILDDIR) $(OBJDIR) $(TEST)
 
 test: $(TEST)
 	./$(TEST)
