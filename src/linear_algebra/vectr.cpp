@@ -113,3 +113,47 @@ size_t Vector::size() const
 {
     return m_data.size();
 }
+
+double Vector::getSum() const
+{
+    double sum = 0;
+    for(const auto& e: m_data)
+    {
+        sum += e;
+    }
+    return sum;
+}
+
+double Vector::getMin() const
+{
+    double minval = 0;
+    bool first = true;
+    for(const auto& e: m_data)
+    {
+        if(first)
+        {
+            minval = e;
+            first = false;
+            continue;
+        }
+        minval = (e < minval) ? e : minval;
+    }
+    return minval;
+}
+
+double Vector::getMax() const
+{
+    double maxval;
+    bool first = true;
+    for(const auto& e: m_data)
+    {
+        if(first)
+        {
+            maxval = e;
+            first = false;
+            continue;
+        }
+        maxval = (e > maxval) ? e : maxval;
+    }
+    return maxval;
+}

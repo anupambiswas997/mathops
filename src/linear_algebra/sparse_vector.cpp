@@ -133,3 +133,36 @@ std::string SparseVector::getText() const
 {
     return getVectorText((*this), m_size);
 }
+
+double SparseVector::getSum() const
+{
+    double sum = 0;
+    size_t count = 0;
+    for(const auto& e: m_data)
+    {
+        sum += e.second;
+        count++;
+    }
+    sum += ((m_size - count) * m_defaultValue);
+    return sum;
+}
+
+double SparseVector::getMin() const
+{
+    double minval = m_defaultValue;
+    for(const auto& e: m_data)
+    {
+        minval = (e.second < minval) ? e.second : minval;
+    }
+    return minval;
+}
+
+double SparseVector::getMax() const
+{
+    double maxval = m_defaultValue;
+    for(const auto& e: m_data)
+    {
+        maxval = (e.second > maxval) ? e.second : maxval;
+    }
+    return maxval;
+}

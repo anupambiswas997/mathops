@@ -37,6 +37,9 @@ public:
     const std::vector<double>& getData() const;
     std::string getText() const;
     size_t size() const;
+    double getSum() const;
+    double getMin() const;
+    double getMax() const;
 };
 
 #endif

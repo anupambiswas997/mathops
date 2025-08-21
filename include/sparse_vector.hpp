@@ -36,6 +36,9 @@ public:
 
     const std::map<size_t, double>& getData() const;
     std::string getText() const;
+    double getSum() const;
+    double getMin() const;
+    double getMax() const;
 };
 
 #endif
