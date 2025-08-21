@@ -21,7 +21,7 @@ DEPS := $(OBJFILES:.o=.d)
 LIB := $(BUILDDIR)/libmathops.a
 TESTSDIR := tests
 TEST := $(TESTSDIR)/test
-TEST_HEADERS := $(TESTSDIR)/linear_algebra_tests.hpp
+TEST_HEADERS := $(wildcard $(TESTSDIR)/*.hpp)
 
 .PHONY: all clean test
 
@@ -33,6 +33,7 @@ show:
 	$(info Object-dir: $(OBJDIR))
 	$(info Object-files: $(OBJFILES))
 	$(info Deps: $(DEPS))
+	$(info Test-headers: $(TEST_HEADERS))
 
 define BUILD_MODULE
 $(1)/%.o: $(2)/%.cpp
@@ -47,7 +48,7 @@ $(eval $(call BUILD_MODULE, $(OBJDIR), $(SRCDIR3)))
 -include $(DEPS)
 
 $(TEST): tests/tests.cpp $(TEST_HEADERS) $(OBJFILES)
-	$(CXX) -I $(INCLUDEDIR) $^ -o $@
+	$(CXX) -I $(INCLUDEDIR) tests/tests.cpp $(OBJFILES) -o $@
 
 $(LIB): $(OBJFILES)
 	ar rcs $@ $^

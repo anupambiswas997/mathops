@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "linear_algebra_tests.hpp"
+#include "linear_algebra_tests2.hpp"
 //#include "calculus_tests.hpp" // in future
 
 using namespace std;
@@ -31,6 +32,7 @@ void testAll()
 {
     vector<TestParams> testParamsList = {};
     performLinearAlgebraTests(testParamsList);
+    performLinearAlgebraTests2(testParamsList);
     //performCalculusTests(testParamsList);
     tabulateResults(testParamsList);
 }

@@ -1,3 +1,6 @@
+#ifndef TEST_BASE_HPP
+#define TEST_BASE_HPP
+
 #include "matrix.hpp"
 #include "sparse_matrix.hpp"
 #include "vectr.hpp"
@@ -7,19 +10,25 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
+#include <cmath>
 
 struct TestParams
 {
     std::string name;
-    //std::string text;
     bool passed;
-    TestParams(std::string tName, bool tPassed)//std::string tText, bool tPassed)
+    TestParams(std::string tName, bool tPassed)
     {
         name = tName;
-        //text = tText;
         passed = tPassed;
     }
 };
+
+bool areEqual(double a, double b, double tolerance=1.e-8)
+{
+    double diff = fabs(a - b);
+    return diff <= tolerance;
+}
 
 template <typename MatrixTypeA, typename MatrixTypeB>
 double getMaximumAbsDiff(const MatrixTypeA& ma, const MatrixTypeB& mb, size_t numRows, size_t numColumns)
@@ -29,7 +38,7 @@ double getMaximumAbsDiff(const MatrixTypeA& ma, const MatrixTypeB& mb, size_t nu
     {
         for(size_t j = 0; j < numColumns; j++)
         {
-            double curDiff = abs(ma[i][j] - mb[i][j]);
+            double curDiff = fabs(ma[i][j] - mb[i][j]);
             maxDiff = (curDiff > maxDiff) ? curDiff : maxDiff;
         }
     }
@@ -49,7 +58,7 @@ double getMaximumAbsDiff(const VectorTypeA& va, const VectorTypeB& vb, size_t si
     double maxDiff = 0;
     for(size_t i = 0; i < size; i++)
     {
-        double curDiff = abs(va[i] - vb[i]);
+        double curDiff = fabs(va[i] - vb[i]);
         maxDiff = (curDiff > maxDiff) ? curDiff : maxDiff;
     }
     return maxDiff;
@@ -142,3 +151,5 @@ SparseMatrix getSparseMatrixFromFile(std::string filepath)
     f.close();
     return sm;
 }
+
+#endif
